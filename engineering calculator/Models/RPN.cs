@@ -38,7 +38,9 @@ namespace Calculator.Models
             {
                 //Разделители пропускаем
                 if (IsDelimeter(input[i]))
+                {
                     continue; //Переходим к следующему символу
+                }
 
                 if (input[i] == '-' && (i == 0 || i > 0 && (char.IsDigit(input[i - 1]) || input[i - 1] == '(')))
                 {
@@ -56,7 +58,9 @@ namespace Calculator.Models
                         i++; //Переходим к следующему символу
 
                         if (i == input.Length)
+                        {
                             break; //Если символ - последний, то выходим из цикла
+                        }
                     }
 
                     output += " "; //Дописываем после числа пробел в строку с выражением
@@ -65,7 +69,10 @@ namespace Calculator.Models
 
                 //Если символ - оператор
                 if (!IsOperator(input[i]))
+                {
                     continue;
+                }
+
                 switch (input[i])
                 {
                     case '(':
@@ -85,9 +92,11 @@ namespace Calculator.Models
                     default: //Если любой другой оператор
                         if (operStack.Count > 0) //Если в стеке есть элементы
                             if (GetPriority(input[i]) <= GetPriority(operStack.Peek()))
+                            {
                                 //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
                                 output += operStack.Pop() + " ";
-                                    //То добавляем последний оператор из стека в строку с выражением
+                            }
+                        //То добавляем последний оператор из стека в строку с выражением
 
                         operStack.Push(char.Parse(input[i].ToString()));
                             //Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
@@ -97,7 +106,9 @@ namespace Calculator.Models
 
             //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
             while (operStack.Count > 0)
+            {
                 output += operStack.Pop() + " ";
+            }
 
             do
             {
@@ -131,7 +142,9 @@ namespace Calculator.Models
                         x += input[i]; //Добавляем
                         i++;
                         if (i == input.Length)
+                        {
                             break;
+                        }
                     }
 
                     temp.Push(double.Parse(x)); //Записываем в стек

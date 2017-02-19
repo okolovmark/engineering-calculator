@@ -114,9 +114,15 @@ namespace Calculator.ViewModels
         public bool DisplayNull()
         {
             if (_display== "")
+            {
                 Display= null;
+            }
+
             if (Display== null)
+            {
                 return true;
+            }
+
             return false;
         }
 
@@ -138,8 +144,11 @@ namespace Calculator.ViewModels
 
                     char[] lastsimvol = null;
                     if (!DisplayNull())
-                        lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
-                    if (lastsimvol == null)
+                        {
+                            lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
+                        }
+
+                        if (lastsimvol == null)
                     {
                         break;
                     }
@@ -157,8 +166,11 @@ namespace Calculator.ViewModels
                             Display=_display.Substring(0, _display.Length - 3);
                         doif = true;
                         if (DisplayNull())
-                            break;
-                        lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
+                            {
+                                break;
+                            }
+
+                            lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
                             _countOpenBracket--;
                     }
 
@@ -170,8 +182,11 @@ namespace Calculator.ViewModels
                             Display=_display.Substring(0, _display.Length - 3);
                         doif = true;
                         if (DisplayNull())
-                            break;
-                        lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
+                            {
+                                break;
+                            }
+
+                            lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
                             _countOpenBracket--;
                     }
 
@@ -183,8 +198,11 @@ namespace Calculator.ViewModels
                             Display=_display.Substring(0, _display.Length - 4);
                         doif = true;
                         if (DisplayNull())
-                            break;
-                        lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
+                            {
+                                break;
+                            }
+
+                            lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
                             _countOpenBracket--;
                     }
 
@@ -194,14 +212,19 @@ namespace Calculator.ViewModels
                             Display=_display.Substring(0, _display.Length - 2);
                         doif = true;
                         if (DisplayNull())
-                            break;
+                            {
+                                break;
+                            }
+
                             _countOpenBracket--;
                     }
 
                     if (!doif)
+                        {
                             Display=_display.Substring(0, _display.Length - 1);
+                        }
 
-                    break;
+                        break;
                 }
 
                 case "(":
@@ -217,13 +240,20 @@ namespace Calculator.ViewModels
                     const string digits = "0123456789";
                     foreach (var i in digits)
                     {
-                        if (lastsimvol[0] != i) continue;
+                        if (lastsimvol[0] != i)
+                            {
+                                continue;
+                            }
+
                             Display=_display+ "*";
                         break;
                     }
 
                     if (lastsimvol[0] == '(')
-                        break;
+                        {
+                            break;
+                        }
+
                         _countOpenBracket++;
                         Display=_display+ button;
                     break;
@@ -232,13 +262,19 @@ namespace Calculator.ViewModels
                 case ")":
                 {
                     if (_display== null)
-                        break;
-                    var lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
+                        {
+                            break;
+                        }
+
+                        var lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
                     const string simvols = "(,+-/*^";
                     var isTrue = false;
                     if (lastsimvol[0] == '(')
-                        break;
-                    if (_countOpenBracket> 0)
+                        {
+                            break;
+                        }
+
+                        if (_countOpenBracket> 0)
                     {
                         foreach (var i in simvols)
                         {
@@ -296,13 +332,19 @@ namespace Calculator.ViewModels
 
                 {
                     if (_display== null)
-                        break;
-                    char[] lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
+                        {
+                            break;
+                        }
+
+                        char[] lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
                     var simvols = ",+-/*^";
                     bool isequal = false;
                     if (lastsimvol[0] == '(')
-                        break;
-                    foreach (var i in simvols)
+                        {
+                            break;
+                        }
+
+                        foreach (var i in simvols)
                     {
                         if (lastsimvol[0] == i)
                         {
@@ -313,7 +355,10 @@ namespace Calculator.ViewModels
                     }
 
                     if (isequal)
-                        break;
+                        {
+                            break;
+                        }
+
                         Display=_display+ button;
                         DisplayErr= null;
                     break;
@@ -322,8 +367,11 @@ namespace Calculator.ViewModels
                 case ",":
                 {
                     if (_display== null)
+                        {
                             Display=_display+ "0";
-                    const string simvols = "+-/*^";
+                        }
+
+                        const string simvols = "+-/*^";
                     const string digits = "0123456789";
                     var reverseDisplay = new string(_display.ToCharArray().Reverse().ToArray());
                     string tempDisplay = null;
@@ -333,8 +381,12 @@ namespace Calculator.ViewModels
 
                     for (var i = 0; i < reverseDisplay.Length; i++)
                     {
-                        if (reverseDisplay[i] != ',') continue;
-                        isHavePoint = true;
+                        if (reverseDisplay[i] != ',')
+                            {
+                                continue;
+                            }
+
+                            isHavePoint = true;
                         tempDisplay = reverseDisplay.Substring(0, i);
                         break;
                     }
@@ -373,7 +425,11 @@ namespace Calculator.ViewModels
                                 var lastsimvol1 = _display.Substring(_display.Length - 1).ToCharArray();
                                 foreach (var j in simvols)
                                 {
-                                    if (lastsimvol1[0] != j) continue;
+                                    if (lastsimvol1[0] != j)
+                                        {
+                                            continue;
+                                        }
+
                                         Display=_display+ "0";
                                     break;
                                 }
@@ -383,8 +439,11 @@ namespace Calculator.ViewModels
                             }
                         }
                     else
+                        {
                             Display=_display+ button;
-                    break;
+                        }
+
+                        break;
                 }
 
                 case "sin":
@@ -467,7 +526,10 @@ namespace Calculator.ViewModels
             char[] lastsimvol = null;
 
             if (_display!= null)
+            {
                 lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
+            }
+
             if (lastsimvol == null)
             {
                 complete = false;

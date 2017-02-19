@@ -23,7 +23,10 @@ namespace Calculator.Commands
         public bool CanExecute(object parameter)
         {
             if (Command != null)
+            {
                 return Command.CanExecute(parameter);
+            }
+
             return false;
         }
 

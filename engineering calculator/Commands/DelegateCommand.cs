@@ -11,25 +11,17 @@ namespace Calculator.Commands
     public class DelegateCommand : ICommand
     {
 
-        /// <summary>
-        ///     Constructor
-        /// </summary>
         public DelegateCommand(Action executeMethod)
             : this(executeMethod, null, false)
         {
         }
 
-        /// <summary>
-        ///     Constructor
-        /// </summary>
         public DelegateCommand(Action executeMethod, Func<bool> canExecuteMethod)
             : this(executeMethod, canExecuteMethod, false)
         {
         }
 
-        /// <summary>
-        ///     Constructor
-        /// </summary>
+       
         public DelegateCommand(Action executeMethod, Func<bool> canExecuteMethod, bool isAutomaticRequeryDisabled)
         {
             if (executeMethod == null)
@@ -42,9 +34,9 @@ namespace Calculator.Commands
             _isAutomaticRequeryDisabled= isAutomaticRequeryDisabled;
         }
 
-        /// <summary>
-        ///     Method to determine if the command can be executed
-        /// </summary>
+        
+        //    Method to determine if the command can be executed
+        
         public bool CanExecute()
         {
             if (_canExecuteMethod!= null)
@@ -55,9 +47,9 @@ namespace Calculator.Commands
             return true;
         }
 
-        /// <summary>
-        ///     Execution of the command
-        /// </summary>
+        
+        //     Execution of the command
+       
         public void Execute()
         {
             if (_executeMethod!= null)
@@ -66,9 +58,9 @@ namespace Calculator.Commands
             }
         }
 
-        /// <summary>
-        ///     Property to enable or disable CommandManager's automatic requery on this command
-        /// </summary>
+      
+        //     Property to enable or disable CommandManager's automatic requery on this command
+      
         public bool IsAutomaticRequeryDisabled
         {
             get
@@ -94,25 +86,25 @@ namespace Calculator.Commands
             }
         }
 
-        /// <summary>
-        ///     Raises the CanExecuteChaged event
-        /// </summary>
+     
+        //    Raises the CanExecuteChaged event
+      
         public void RaiseCanExecuteChanged()
         {
             OnCanExecuteChanged();
         }
 
-        /// <summary>
-        ///     Protected virtual method to raise CanExecuteChanged event
-        /// </summary>
+        
+        //     Protected virtual method to raise CanExecuteChanged event
+     
         protected virtual void OnCanExecuteChanged()
         {
             CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
         }
 
-        /// <summary>
-        ///     ICommand.CanExecuteChanged implementation
-        /// </summary>
+        
+        //     ICommand.CanExecuteChanged implementation
+     
         public event EventHandler CanExecuteChanged
         {
             add
@@ -152,33 +144,23 @@ namespace Calculator.Commands
         private List<WeakReference> _canExecuteChangedHandlers;
     }
 
-    /// <summary>
-    ///     This class allows delegating the commanding logic to methods passed as parameters,
-    ///     and enables a View to bind commands to objects that are not part of the element tree.
-    /// </summary>
-    /// <typeparam name="T">Type of the parameter passed to the delegates</typeparam>
+    //     This class allows delegating the commanding logic to methods passed as parameters,
+    //     and enables a View to bind commands to objects that are not part of the element tree.
+   
     public class DelegateCommand<T> : ICommand
     {
 
-        /// <summary>
-        ///     Constructor
-        /// </summary>
+       
         public DelegateCommand(Action<T> executeMethod)
             : this(executeMethod, null, false)
         {
         }
 
-        /// <summary>
-        ///     Constructor
-        /// </summary>
         public DelegateCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod)
             : this(executeMethod, canExecuteMethod, false)
         {
         }
-
-        /// <summary>
-        ///     Constructor
-        /// </summary>
+        
         public DelegateCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod, bool isAutomaticRequeryDisabled)
         {
             if (executeMethod == null)
@@ -191,9 +173,7 @@ namespace Calculator.Commands
             _isAutomaticRequeryDisabled= isAutomaticRequeryDisabled;
         }
 
-        /// <summary>
-        ///     Method to determine if the command can be executed
-        /// </summary>
+      
         public bool CanExecute(T parameter)
         {
             if (_canExecuteMethod!= null)
@@ -204,9 +184,9 @@ namespace Calculator.Commands
             return true;
         }
 
-        /// <summary>
-        ///    Execution of the command
-        /// </summary>
+        
+        //    Execution of the command
+        
         public void Execute(T parameter)
         {
             if (_executeMethod!= null)
