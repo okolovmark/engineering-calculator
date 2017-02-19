@@ -404,7 +404,8 @@ namespace engineering_calculator.ViewModels
             _countOpenBracket++;
         }
 
-        public void GetResult() //вычисляет выражение
+        //вычисляет выражение
+        public void GetResult() 
         {
             bool isTrue;
             CorrectExpression(out isTrue);
