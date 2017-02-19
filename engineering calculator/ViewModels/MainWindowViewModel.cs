@@ -437,7 +437,7 @@ namespace engineering_calculator.ViewModels
                 Display = null;
                 complete = false;
                 return;
-            }
+            } 
             var simvols = "+-/*^";
             foreach (var i in simvols)
             {
