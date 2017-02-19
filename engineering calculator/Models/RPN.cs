@@ -24,44 +24,43 @@ namespace engineering_calculator.Models
             var input = input1;
             var output = string.Empty; //Строка для хранения выражения
             var operStack = new Stack<char>(); //Стек для хранения операторов
-            input=input1.Replace("sin", "s");
+            input = input1.Replace("sin", "s");
             var temp = input;
-            input=temp.Replace("cos", "c");
-            temp=input;
-            input=temp.Replace("tan", "t");
-            temp=input;
-            input=temp.Replace("√", "q");
-            temp=input;
-            input=temp.Replace("lg", "l");
-            temp=input;
-            input=temp.Replace("ln", "n");
-            for (var i = 0; i<input.Length; i++) //Для каждого символа в входной строке
+            input = temp.Replace("cos", "c");
+            temp = input;
+            input = temp.Replace("tan", "t");
+            temp = input;
+            input = temp.Replace("√", "q");
+            temp = input;
+            input = temp.Replace("lg", "l");
+            temp = input;
+            input = temp.Replace("ln", "n");
+            for (var i = 0; i < input.Length; i++) //Для каждого символа в входной строке
             {
-                
                 //Разделители пропускаем
                 if (IsDelimeter(input[i]))
                     continue; //Переходим к следующему символу
 
-                if (input[i] == '-' && (i==0 || ( i>0 &&(char.IsDigit(input[i-1])||input[i-1]=='('))))
+                if (input[i] == '-' && (i == 0 || i > 0 && (char.IsDigit(input[i - 1]) || input[i - 1] == '(')))
                 {
                     i++;
                     output += "-"; //в переменную для чисел добавляется знак "-"
                 }
-               
+
                 //Если символ - цифра, то считываем все число
                 if (char.IsDigit(input[i])) //Если цифра
                 {
                     //Читаем до разделителя или оператора, что бы получить число
-                    while (!IsDelimeter(input[i])&&!IsOperator(input[i]))
+                    while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
                     {
-                        output+=input[i]; //Добавляем каждую цифру числа к нашей строке
+                        output += input[i]; //Добавляем каждую цифру числа к нашей строке
                         i++; //Переходим к следующему символу
 
-                        if (i==input.Length)
+                        if (i == input.Length)
                             break; //Если символ - последний, то выходим из цикла
                     }
 
-                    output+=" "; //Дописываем после числа пробел в строку с выражением
+                    output += " "; //Дописываем после числа пробел в строку с выражением
                     i--; //Возвращаемся на один символ назад, к символу перед разделителем
                 }
 
@@ -77,25 +76,28 @@ namespace engineering_calculator.Models
                         //Выписываем все операторы до открывающей скобки в строку
                         var s = operStack.Pop();
 
-                        while (s!='(')
+                        while (s != '(')
                         {
-                            output+=s.ToString()+' ';
-                            s=operStack.Pop();
+                            output += s.ToString() + ' ';
+                            s = operStack.Pop();
                         }
                         break;
                     default: //Если любой другой оператор
-                        if (operStack.Count>0) //Если в стеке есть элементы
-                            if (GetPriority(input[i])<=GetPriority(operStack.Peek())) //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
-                                output+=operStack.Pop()+" "; //То добавляем последний оператор из стека в строку с выражением
+                        if (operStack.Count > 0) //Если в стеке есть элементы
+                            if (GetPriority(input[i]) <= GetPriority(operStack.Peek()))
+                                //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
+                                output += operStack.Pop() + " ";
+                                    //То добавляем последний оператор из стека в строку с выражением
 
-                        operStack.Push(char.Parse(input[i].ToString())); //Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
+                        operStack.Push(char.Parse(input[i].ToString()));
+                            //Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
                         break;
                 }
             }
 
             //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
-            while (operStack.Count>0)
-                output+=operStack.Pop()+" ";
+            while (operStack.Count > 0)
+                output += operStack.Pop() + " ";
 
             do
             {
@@ -103,8 +105,7 @@ namespace engineering_calculator.Models
             } while (output.Contains("--"));
 
 
-
-                return output; //Возвращаем выражение в постфиксной записи
+            return output; //Возвращаем выражение в постфиксной записи
         }
 
         //Метод, вычисляющий значение выражения, уже преобразованного в постфиксную запись
@@ -113,27 +114,27 @@ namespace engineering_calculator.Models
             double result = 0; //Результат
             var temp = new Stack<double>(); //Временный стек для решения
 
-            for (var i = 0; i<input.Length; i++) //Для каждого символа в строке
+            for (var i = 0; i < input.Length; i++) //Для каждого символа в строке
             {
                 var x = string.Empty;
                 //если минус первый и после него цифра, то число отрицательное
-                if (input[i]=='-'&&char.IsDigit(input[i+1]))
+                if (input[i] == '-' && char.IsDigit(input[i + 1]))
                 {
-                    x+="-";
+                    x += "-";
                     i++;
                 }
                 //Если символ - цифра, то читаем все число и записываем на вершину стека
                 if (char.IsDigit(input[i]))
                 {
-                    while (!IsDelimeter(input[i])&&!IsOperator(input[i])) //Пока не разделитель
+                    while (!IsDelimeter(input[i]) && !IsOperator(input[i])) //Пока не разделитель
                     {
-                        x+=input[i]; //Добавляем
+                        x += input[i]; //Добавляем
                         i++;
-                        if (i==input.Length)
+                        if (i == input.Length)
                             break;
                     }
                     temp.Push(double.Parse(x)); //Записываем в стек
-                   // x = string.Empty;
+                    // x = string.Empty;
                     i--;
                 }
                 else if (IsOperator(input[i])) //Если символ - оператор
@@ -151,42 +152,42 @@ namespace engineering_calculator.Models
                     switch (input[i]) //И производим над ними действие, согласно оператору
                     {
                         case '+':
-                            result=b+a;
+                            result = b + a;
                             break;
                         case '-':
-                            result=b-a;
+                            result = b - a;
                             break;
                         case '*':
-                            result=b*a;
+                            result = b * a;
                             break;
                         case '/':
-                            result=b/a;
+                            result = b / a;
                             break;
                         case '^':
-                            result=Math.Pow(b, a);
+                            result = Math.Pow(b, a);
                             break;
                         case 's':
-                            result=Math.Sin(a);
+                            result = Math.Sin(a);
                             temp.Push(b);
                             break;
                         case 'c':
-                            result=Math.Cos(a);
+                            result = Math.Cos(a);
                             temp.Push(b);
                             break;
                         case 't':
-                            result=Math.Tan(a);
+                            result = Math.Tan(a);
                             temp.Push(b);
                             break;
                         case 'q':
-                            result=Math.Sqrt(a);
+                            result = Math.Sqrt(a);
                             temp.Push(b);
                             break;
                         case 'l':
-                            result=Math.Log10(a);
+                            result = Math.Log10(a);
                             temp.Push(b);
                             break;
                         case 'n':
-                            result=Math.Log(a);
+                            result = Math.Log(a);
                             temp.Push(b);
                             break;
                     }
@@ -194,19 +195,18 @@ namespace engineering_calculator.Models
                 }
             }
             return temp.Peek(); //Забираем результат всех вычислений из стека и возвращаем его
-
         }
 
         //Метод возвращает true, если проверяемый символ - разделитель ("пробел" или "равно")
         private static bool IsDelimeter(char c)
         {
-            return " =".IndexOf(c)!=-1;
+            return " =".IndexOf(c) != -1;
         }
 
         //Метод возвращает true, если проверяемый символ - оператор
         private static bool IsOperator(char с)
         {
-            return "+-/*^()sctqln".IndexOf(с)!=-1;
+            return "+-/*^()sctqln".IndexOf(с) != -1;
             /**
              * s-sin    
              * c-cos
@@ -216,7 +216,7 @@ namespace engineering_calculator.Models
              * n-ln
              */
         }
-       
+
         //Метод возвращает приоритет оператора
         private static byte GetPriority(char s)
         {

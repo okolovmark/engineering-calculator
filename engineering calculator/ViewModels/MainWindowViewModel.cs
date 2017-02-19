@@ -19,15 +19,17 @@ namespace engineering_calculator.ViewModels
         private string _displayExp;
         private string _displayErr;
         int _countOpenBracket;
+
         public string Display
         {
             get { return _display; }
             set
             {
-                _display=value;
+                _display = value;
                 OnPropertyChanged("Display");
             }
         }
+
         public string DisplayExp
         {
             get { return _displayExp; }
@@ -37,12 +39,13 @@ namespace engineering_calculator.ViewModels
                 OnPropertyChanged("DisplayExp");
             }
         }
+
         public string DisplayErr
         {
             get { return _displayErr; }
             set
             {
-                _displayErr=value;
+                _displayErr = value;
                 OnPropertyChanged("DisplayErr");
             }
         }
@@ -51,9 +54,9 @@ namespace engineering_calculator.ViewModels
         {
             get
             {
-                if (_digitButtonPressCommand==null)
+                if (_digitButtonPressCommand == null)
                 {
-                    _digitButtonPressCommand=new DelegateCommand<string>(
+                    _digitButtonPressCommand = new DelegateCommand<string>(
                         DigitButtonPress, CanDigitButtonPress);
                 }
                 return _digitButtonPressCommand;
@@ -64,20 +67,21 @@ namespace engineering_calculator.ViewModels
         {
             get
             {
-                if (_getDigitCommand==null)
+                if (_getDigitCommand == null)
                 {
-                    _getDigitCommand=new DelegateCommand<string>(GetDigit, CanDigitButtonPress);
+                    _getDigitCommand = new DelegateCommand<string>(GetDigit, CanDigitButtonPress);
                 }
                 return _getDigitCommand;
             }
         }
+
         public ICommand GetResultCommand
         {
             get
             {
-                if (_getResultCommand==null)
+                if (_getResultCommand == null)
                 {
-                    _getResultCommand=new DelegateCommand(GetResult, CanResultButtonPress);
+                    _getResultCommand = new DelegateCommand(GetResult, CanResultButtonPress);
                 }
                 return _getResultCommand;
             }
@@ -87,6 +91,7 @@ namespace engineering_calculator.ViewModels
         {
             return true;
         }
+
         private static bool CanDigitButtonPress(string button)
         {
             return true;
@@ -95,17 +100,18 @@ namespace engineering_calculator.ViewModels
         public void GetDigit(string button) //вводим числа
         {
             Display = _display + button;
-            DisplayErr=null;
+            DisplayErr = null;
         }
 
         public bool DisplayNull()
         {
-            if (_display=="")
-                Display=null;
+            if (_display == "")
+                Display = null;
             if (Display == null)
                 return true;
             return false;
         }
+
         public void DigitButtonPress(string button) //вводим операторы
         {
             switch (button)
@@ -286,7 +292,7 @@ namespace engineering_calculator.ViewModels
                     if (isequal)
                         break;
                     Display = _display + button;
-                    DisplayErr=null;
+                    DisplayErr = null;
                     break;
                 }
                 case ",":
@@ -387,25 +393,25 @@ namespace engineering_calculator.ViewModels
 
         public void CorrectInputFunc(string button)
         {
-            if (Display!=null)
+            if (Display != null)
             {
-                var lastsimvol = _display.Substring(_display.Length-1).ToCharArray();
+                var lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
                 var digits = "1234567890";
                 foreach (var i in digits)
                 {
-                    if (lastsimvol[0]==i)
+                    if (lastsimvol[0] == i)
                     {
-                        Display=_display+"*";
+                        Display = _display + "*";
                     }
                 }
             }
-            Display=_display+button;
-            Display=_display+"(";
+            Display = _display + button;
+            Display = _display + "(";
             _countOpenBracket++;
         }
 
         //вычисляет выражение
-        public void GetResult() 
+        public void GetResult()
         {
             bool isTrue;
             CorrectExpression(out isTrue);
@@ -437,7 +443,7 @@ namespace engineering_calculator.ViewModels
                 Display = null;
                 complete = false;
                 return;
-            } 
+            }
             var simvols = "+-/*^";
             foreach (var i in simvols)
             {
@@ -448,10 +454,10 @@ namespace engineering_calculator.ViewModels
                     return;
                 }
             }
-            if (lastsimvol[0]==',')
+            if (lastsimvol[0] == ',')
             {
-                DisplayErr="закончите нецелое число";
-                complete=false;
+                DisplayErr = "закончите нецелое число";
+                complete = false;
                 return;
             }
             // bool again;
@@ -530,8 +536,8 @@ namespace engineering_calculator.ViewModels
             //} while (again);
             if (lastsimvol[0] == '(')
             {
-                DisplayErr="завершите выражение со скобками";
-                complete=false;
+                DisplayErr = "завершите выражение со скобками";
+                complete = false;
                 return;
             }
 
@@ -549,7 +555,7 @@ namespace engineering_calculator.ViewModels
             }
             if (complete)
             {
-                DisplayErr=null;
+                DisplayErr = null;
             }
         }
     }
