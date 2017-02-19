@@ -1,4 +1,8 @@
-﻿namespace Calculator
+﻿// <copyright file="App.xaml.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace Calculator
 {
     using System.Windows;
 
@@ -11,7 +15,7 @@
         {
             // Create the ViewModel and expose it using the View's DataContext
             Views.MainWindow view = new Views.MainWindow();
-            view.DataContext=new ViewModels.MainWindowViewModel();
+            view.DataContext = new ViewModels.MainWindowViewModel();
             view.Show();
         }
     }

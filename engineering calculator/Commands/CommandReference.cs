@@ -1,4 +1,8 @@
-﻿namespace Calculator.Commands
+﻿// <copyright file="CommandReference.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace Calculator.Commands
 {
     using System;
     using System.Windows;
@@ -6,12 +10,9 @@
 
     public class CommandReference : Freezable, ICommand
     {
-        public CommandReference()
-        {
-            // Blank
-        }
-
         public static readonly DependencyProperty CommandProperty = DependencyProperty.Register("Command", typeof(ICommand), typeof(CommandReference), new PropertyMetadata(new PropertyChangedCallback(OnCommandChanged)));
+
+        public event EventHandler CanExecuteChanged;
 
         public ICommand Command
         {
@@ -19,11 +20,9 @@
             set { SetValue(CommandProperty, value); }
         }
 
-        #region ICommand Members
-
         public bool CanExecute(object parameter)
         {
-            if (Command!=null)
+            if (Command != null)
                 return Command.CanExecute(parameter);
             return false;
         }
@@ -33,7 +32,10 @@
             Command.Execute(parameter);
         }
 
-        public event EventHandler CanExecuteChanged;
+        protected override Freezable CreateInstanceCore()
+        {
+            throw new NotImplementedException();
+        }
 
         private static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -41,25 +43,15 @@
             ICommand oldCommand = e.OldValue as ICommand;
             ICommand newCommand = e.NewValue as ICommand;
 
-            if (oldCommand!=null)
+            if (oldCommand != null)
             {
-                oldCommand.CanExecuteChanged-=commandReference.CanExecuteChanged;
+                oldCommand.CanExecuteChanged -= commandReference.CanExecuteChanged;
             }
-            if (newCommand!=null)
+
+            if (newCommand != null)
             {
-                newCommand.CanExecuteChanged+=commandReference.CanExecuteChanged;
+                newCommand.CanExecuteChanged += commandReference.CanExecuteChanged;
             }
         }
-
-        #endregion
-
-        #region Freezable
-
-        protected override Freezable CreateInstanceCore()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

@@ -110,6 +110,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="stylecop.json" />
+    <None Include="stylecop1.json" />
+    <None Include="stylecop2.json" />
+    <None Include="stylecop3.json" />
+    <None Include="stylecop4.json" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />

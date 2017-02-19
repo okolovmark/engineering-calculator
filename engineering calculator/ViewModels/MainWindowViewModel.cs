@@ -1,4 +1,8 @@
-﻿namespace Calculator.ViewModels
+﻿// <copyright file="MainWindowViewModel.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace Calculator.ViewModels
 {
     using System;
     using System.Linq;
@@ -21,9 +25,10 @@
         public string Display
         {
             get { return _display; }
+
             set
             {
-                _display = value;
+                _display= value;
                 OnPropertyChanged("Display");
             }
         }
@@ -31,9 +36,10 @@
         public string DisplayExp
         {
             get { return _displayExp; }
+
             set
             {
-                _displayExp = value;
+                _displayExp= value;
                 OnPropertyChanged("DisplayExp");
             }
         }
@@ -41,9 +47,10 @@
         public string DisplayErr
         {
             get { return _displayErr; }
+
             set
             {
-                _displayErr = value;
+                _displayErr= value;
                 OnPropertyChanged("DisplayErr");
             }
         }
@@ -52,11 +59,12 @@
         {
             get
             {
-                if (_digitButtonPressCommand == null)
+                if (_digitButtonPressCommand== null)
                 {
-                    _digitButtonPressCommand = new DelegateCommand<string>(
+                    _digitButtonPressCommand= new DelegateCommand<string>(
                         DigitButtonPress, CanDigitButtonPress);
                 }
+
                 return _digitButtonPressCommand;
             }
         }
@@ -65,10 +73,11 @@
         {
             get
             {
-                if (_getDigitCommand == null)
+                if (_getDigitCommand== null)
                 {
-                    _getDigitCommand = new DelegateCommand<string>(GetDigit, CanDigitButtonPress);
+                    _getDigitCommand= new DelegateCommand<string>(GetDigit, CanDigitButtonPress);
                 }
+
                 return _getDigitCommand;
             }
         }
@@ -77,10 +86,11 @@
         {
             get
             {
-                if (_getResultCommand == null)
+                if (_getResultCommand== null)
                 {
-                    _getResultCommand = new DelegateCommand(GetResult, CanResultButtonPress);
+                    _getResultCommand= new DelegateCommand(GetResult, CanResultButtonPress);
                 }
+
                 return _getResultCommand;
             }
         }
@@ -97,15 +107,15 @@
 
         public void GetDigit(string button) //вводим числа
         {
-            Display = _display + button;
-            DisplayErr = null;
+            Display=_display+ button;
+            DisplayErr= null;
         }
 
         public bool DisplayNull()
         {
-            if (_display == "")
-                Display = null;
-            if (Display == null)
+            if (_display== "")
+                Display= null;
+            if (Display== null)
                 return true;
             return false;
         }
@@ -115,112 +125,120 @@
             switch (button)
             {
                 case "C": //очищаем поле
-                    Display = null;
-                    _countOpenBracket = 0;
+                    Display= null;
+                    _countOpenBracket= 0;
                     break;
                 case "Del": //backspace
                 {
                     if (Display.Length == 1)
                     {
-                        Display = null;
+                            Display= null;
                         break;
                     }
+
                     char[] lastsimvol = null;
                     if (!DisplayNull())
-                        lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
+                        lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
                     if (lastsimvol == null)
                     {
                         break;
                     }
+
                     if (lastsimvol[0] == ')')
                     {
-                        _countOpenBracket++;
+                            _countOpenBracket++;
                     }
+
                     var doif = false;
-                    if (lastsimvol[0] == '(' && _display.Length > 2 && _display.Length < 4 &&
+                    if (lastsimvol[0] == '(' &&_display.Length > 2 &&_display.Length < 4 &&
                         char.IsLetter(_display.ElementAt(_display.Length - 2)) &&
                         char.IsLetter(_display.ElementAt(_display.Length - 3)))
                     {
-                        Display = _display.Substring(0, _display.Length - 3);
+                            Display=_display.Substring(0, _display.Length - 3);
                         doif = true;
                         if (DisplayNull())
                             break;
-                        lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
-                        _countOpenBracket--;
+                        lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
+                            _countOpenBracket--;
                     }
 
-                    if (lastsimvol[0] == '(' && _display.Length > 3 &&
+                    if (lastsimvol[0] == '(' &&_display.Length > 3 &&
                         char.IsLetter(_display.ElementAt(_display.Length - 2)) &&
                         char.IsLetter(_display.ElementAt(_display.Length - 3)) &&
                         !char.IsLetter(_display.ElementAt(_display.Length - 4)))
                     {
-                        Display = _display.Substring(0, _display.Length - 3);
+                            Display=_display.Substring(0, _display.Length - 3);
                         doif = true;
                         if (DisplayNull())
                             break;
-                        lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
-                        _countOpenBracket--;
+                        lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
+                            _countOpenBracket--;
                     }
-                    if (lastsimvol[0] == '(' && _display.Length > 3 &&
+
+                    if (lastsimvol[0] == '(' &&_display.Length > 3 &&
                         char.IsLetter(_display.ElementAt(_display.Length - 2)) &&
                         char.IsLetter(_display.ElementAt(_display.Length - 3)) &&
                         char.IsLetter(_display.ElementAt(_display.Length - 4)))
                     {
-                        Display = _display.Substring(0, _display.Length - 4);
+                            Display=_display.Substring(0, _display.Length - 4);
                         doif = true;
                         if (DisplayNull())
                             break;
-                        lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
-                        _countOpenBracket--;
+                        lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
+                            _countOpenBracket--;
                     }
-                    if (lastsimvol[0] == '(' && _display.Length > 1 &&
+
+                    if (lastsimvol[0] == '(' &&_display.Length > 1 &&
                         !char.IsLetter(_display.ElementAt(_display.Length - 2)))
                     {
-                        Display = _display.Substring(0, _display.Length - 2);
+                            Display=_display.Substring(0, _display.Length - 2);
                         doif = true;
                         if (DisplayNull())
                             break;
-                        _countOpenBracket--;
+                            _countOpenBracket--;
                     }
 
                     if (!doif)
-                        Display = _display.Substring(0, _display.Length - 1);
+                            Display=_display.Substring(0, _display.Length - 1);
 
                     break;
                 }
+
                 case "(":
                 {
-                    if (_display == null)
+                    if (_display== null)
                     {
-                        Display = _display + "(";
-                        _countOpenBracket++;
+                            Display=_display+ "(";
+                            _countOpenBracket++;
                         break;
                     }
+
                     var lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
                     const string digits = "0123456789";
                     foreach (var i in digits)
                     {
                         if (lastsimvol[0] != i) continue;
-                        Display = _display + "*";
+                            Display=_display+ "*";
                         break;
                     }
 
                     if (lastsimvol[0] == '(')
                         break;
-                    _countOpenBracket++;
-                    Display = _display + button;
+                        _countOpenBracket++;
+                        Display=_display+ button;
                     break;
                 }
+
                 case ")":
                 {
-                    if (_display == null)
+                    if (_display== null)
                         break;
                     var lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
                     const string simvols = "(,+-/*^";
                     var isTrue = false;
                     if (lastsimvol[0] == '(')
                         break;
-                    if (_countOpenBracket > 0)
+                    if (_countOpenBracket> 0)
                     {
                         foreach (var i in simvols)
                         {
@@ -230,29 +248,34 @@
                                 break;
                             }
                         }
+
                         if (!isTrue)
                         {
-                            _countOpenBracket--;
-                            Display = _display + button;
+                                _countOpenBracket--;
+                                Display=_display+ button;
                         }
                     }
+
                     break;
                 }
+
                 case "-":
                 {
-                    if (_display == null)
+                    if (_display== null)
                     {
-                        Display = _display + button;
+                            Display=_display+ button;
                         break;
                     }
+
                     char[] lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
-                    if (_display == "-")
+                    if (_display== "-")
                     {
                         break;
                     }
+
                     if (_display.Length == 1 || lastsimvol[0] == '(')
                     {
-                        Display = _display + button;
+                            Display=_display+ button;
                         break;
                     }
 
@@ -260,18 +283,19 @@
                         (_display.ElementAt(_display.Length - 2) == '(' &&
                          char.IsDigit(_display.ElementAt(_display.Length - 3))))
                     {
-                        Display = _display + button;
+                            Display=_display+ button;
                     }
 
                     break;
                 }
+
                 case "+":
                 case "/":
                 case "*":
                 case "^":
 
                 {
-                    if (_display == null)
+                    if (_display== null)
                         break;
                     char[] lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
                     var simvols = ",+-/*^";
@@ -283,20 +307,22 @@
                         if (lastsimvol[0] == i)
                         {
                             isequal = true;
-                            DisplayErr = "введите второе число или функцию";
+                                DisplayErr= "введите второе число или функцию";
                             break;
                         }
                     }
+
                     if (isequal)
                         break;
-                    Display = _display + button;
-                    DisplayErr = null;
+                        Display=_display+ button;
+                        DisplayErr= null;
                     break;
                 }
+
                 case ",":
                 {
-                    if (_display == null)
-                        Display = _display + "0";
+                    if (_display== null)
+                            Display=_display+ "0";
                     const string simvols = "+-/*^";
                     const string digits = "0123456789";
                     var reverseDisplay = new string(_display.ToCharArray().Reverse().ToArray());
@@ -312,6 +338,7 @@
                         tempDisplay = reverseDisplay.Substring(0, i);
                         break;
                     }
+
                     if (isHavePoint)
                         foreach (var i in tempDisplay)
                         {
@@ -321,17 +348,20 @@
                                 {
                                     isHaveOperation = true;
                                 }
+
                                 if (isHaveOperation && !isHaveDigit)
                                 {
                                     continue;
                                 }
                             }
+
                             if (!isHaveDigit)
                             {
                                 if (simvols.Any(j => i == j))
                                 {
                                     isHaveDigit = true;
                                 }
+
                                 if (isHaveDigit && !isHaveOperation)
                                 {
                                     continue;
@@ -344,46 +374,52 @@
                                 foreach (var j in simvols)
                                 {
                                     if (lastsimvol1[0] != j) continue;
-                                    Display = _display + "0";
+                                        Display=_display+ "0";
                                     break;
                                 }
 
-                                Display = _display + button;
+                                    Display=_display+ button;
                                 break;
                             }
                         }
                     else
-                        Display = _display + button;
+                            Display=_display+ button;
                     break;
                 }
+
                 case "sin":
                 {
-                    CorrectInputFunc(button);
+                        CorrectInputFunc(button);
                     break;
                 }
+
                 case "cos":
                 {
-                    CorrectInputFunc(button);
+                        CorrectInputFunc(button);
                     break;
                 }
+
                 case "tan":
                 {
-                    CorrectInputFunc(button);
+                        CorrectInputFunc(button);
                     break;
                 }
+
                 case "√":
                 {
-                    CorrectInputFunc(button);
+                        CorrectInputFunc(button);
                     break;
                 }
+
                 case "lg":
                 {
-                    CorrectInputFunc(button);
+                        CorrectInputFunc(button);
                     break;
                 }
+
                 case "ln":
                 {
-                    CorrectInputFunc(button);
+                        CorrectInputFunc(button);
                     break;
                 }
             }
@@ -391,7 +427,7 @@
 
         public void CorrectInputFunc(string button)
         {
-            if (Display != null)
+            if (Display!= null)
             {
                 var lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
                 var digits = "1234567890";
@@ -399,12 +435,13 @@
                 {
                     if (lastsimvol[0] == i)
                     {
-                        Display = _display + "*";
+                        Display=_display+ "*";
                     }
                 }
             }
-            Display = _display + button;
-            Display = _display + "(";
+
+            Display=_display+ button;
+            Display=_display+ "(";
             _countOpenBracket++;
         }
 
@@ -417,8 +454,9 @@
             {
                 return;
             }
-            DisplayExp = Display;
-            Display = RPN.Calculate(Display).ToString(CultureInfo.CurrentCulture);
+
+            DisplayExp=Display;
+            Display= RPN.Calculate(Display).ToString(CultureInfo.CurrentCulture);
         }
 
         public void CorrectExpression(out bool complete) //приводит выражение в корректный вид
@@ -428,36 +466,40 @@
             string subString2 = "NaN";
             char[] lastsimvol = null;
 
-            if (_display != null)
-                lastsimvol = _display.Substring(_display.Length - 1).ToCharArray();
+            if (_display!= null)
+                lastsimvol =_display.Substring(_display.Length - 1).ToCharArray();
             if (lastsimvol == null)
             {
                 complete = false;
                 return;
             }
+
             if (Display.IndexOf(subString1, StringComparison.Ordinal) > -1 ||
                 Display.IndexOf(subString2, StringComparison.Ordinal) > -1)
             {
-                Display = null;
+                Display= null;
                 complete = false;
                 return;
             }
+
             var simvols = "+-/*^";
             foreach (var i in simvols)
             {
                 if (lastsimvol[0] == i)
                 {
-                    DisplayErr = "введите второе число или функцию";
+                    DisplayErr= "введите второе число или функцию";
                     complete = false;
                     return;
                 }
             }
+
             if (lastsimvol[0] == ',')
             {
-                DisplayErr = "закончите нецелое число";
+                DisplayErr= "закончите нецелое число";
                 complete = false;
                 return;
             }
+
             // bool again;
             //do
             //{
@@ -534,26 +576,27 @@
             //} while (again);
             if (lastsimvol[0] == '(')
             {
-                DisplayErr = "завершите выражение со скобками";
+                DisplayErr= "завершите выражение со скобками";
                 complete = false;
                 return;
             }
 
-            if (_display == "")
+            if (_display== "")
             {
-                Display = null;
+                Display= null;
                 complete = false;
                 return;
             }
 
-            while (_countOpenBracket > 0)
+            while (_countOpenBracket> 0)
             {
-                Display = _display + ")";
+                Display=_display+ ")";
                 _countOpenBracket--;
             }
+
             if (complete)
             {
-                DisplayErr = null;
+                DisplayErr= null;
             }
         }
     }

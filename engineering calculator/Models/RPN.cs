@@ -1,4 +1,8 @@
-﻿namespace Calculator.Models
+﻿// <copyright file="RPN.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace Calculator.Models
 {
     using System;
     using System.Collections.Generic;
@@ -76,6 +80,7 @@
                             output += s.ToString() + ' ';
                             s = operStack.Pop();
                         }
+
                         break;
                     default: //Если любой другой оператор
                         if (operStack.Count > 0) //Если в стеке есть элементы
@@ -99,7 +104,6 @@
                 output = output.Replace("--", "-");
             } while (output.Contains("--"));
 
-
             return output; //Возвращаем выражение в постфиксной записи
         }
 
@@ -118,6 +122,7 @@
                     x += "-";
                     i++;
                 }
+
                 //Если символ - цифра, то читаем все число и записываем на вершину стека
                 if (char.IsDigit(input[i]))
                 {
@@ -128,6 +133,7 @@
                         if (i == input.Length)
                             break;
                     }
+
                     temp.Push(double.Parse(x)); //Записываем в стек
                     // x = string.Empty;
                     i--;
@@ -140,6 +146,7 @@
                         temp.Push(1);
                         temp.Push(h);
                     }
+
                     //Берем два последних значения из стека
                     var a = temp.Pop();
                     var b = temp.Pop();
@@ -186,9 +193,11 @@
                             temp.Push(b);
                             break;
                     }
+
                     temp.Push(result); //Результат вычисления записываем обратно в стек
                 }
             }
+
             return temp.Peek(); //Забираем результат всех вычислений из стека и возвращаем его
         }
 

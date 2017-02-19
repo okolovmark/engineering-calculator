@@ -1,4 +1,8 @@
-﻿namespace Calculator.Views
+﻿// <copyright file="MainWindow.xaml.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace Calculator.Views
 {
     using System.Windows;
 
@@ -15,8 +19,8 @@
         //}
         public MainWindow()
         {
-          //  _viewModel=new engineering_calculatorViewModels();
-           InitializeComponent();
+            //  _viewModel=new engineering_calculatorViewModels();
+            InitializeComponent();
         }
     }
 }
