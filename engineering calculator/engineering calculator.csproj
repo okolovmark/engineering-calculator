@@ -7,7 +7,7 @@
     <ProjectGuid>{40F69DFF-7B52-4B17-A467-32DBD33DA2F4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>engineering_calculator</RootNamespace>
+    <RootNamespace>Calculator</RootNamespace>
     <AssemblyName>engineering calculator</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

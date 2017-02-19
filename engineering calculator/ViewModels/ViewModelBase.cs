@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Input;
-
-namespace Calculator.ViewModels
+﻿namespace Calculator.ViewModels
 {
+    using System.ComponentModel;
+
     /// <summary>
     /// Provides common functionality for ViewModel class
     /// </summary>
@@ -17,12 +11,7 @@ namespace Calculator.ViewModels
 
         protected void OnPropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Linq;
-using Calculator.ViewModels;
-using engineering_calculator.Models;
-using System.Globalization;
-using System.Windows.Input;
-using engineering_calculator.Commands;
-
-
-namespace engineering_calculator.ViewModels
+﻿namespace Calculator.ViewModels
 {
+    using System;
+    using System.Linq;
+    using System.Globalization;
+    using System.Windows.Input;
+    using Commands;
+    using Models;
+
     class MainWindowViewModel : ViewModelBase
     {
         private DelegateCommand<string> _digitButtonPressCommand;

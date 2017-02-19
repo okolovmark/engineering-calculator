@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
-
-namespace engineering_calculator.Commands
+﻿namespace Calculator.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Windows.Input;
+
     public class DelegateCommand : ICommand
     {
         #region Constructors

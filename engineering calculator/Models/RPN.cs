@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows;
-using engineering_calculator.ViewModels;
-
-namespace engineering_calculator.Models
+﻿namespace Calculator.Models
 {
+    using System;
+    using System.Collections.Generic;
+
     public class RPN
     {
         //Метод Calculate принимает выражение в виде строки и возвращает результат, в своей работе использует другие методы класса

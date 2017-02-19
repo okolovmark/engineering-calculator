@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Input;
-
-namespace engineering_calculator.Commands
+﻿namespace Calculator.Commands
 {
+    using System;
+    using System.Windows;
+    using System.Windows.Input;
+
     public class CommandReference : Freezable, ICommand
     {
         public CommandReference()
