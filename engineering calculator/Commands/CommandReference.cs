@@ -1,4 +1,4 @@
-﻿// <copyright file="CommandReference.cs" company="PlaceholderCompany">
+﻿// <copyright file="CommandReference.cs" company="Okolov Company">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 

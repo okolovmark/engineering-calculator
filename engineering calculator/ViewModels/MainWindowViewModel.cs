@@ -1,4 +1,4 @@
-﻿// <copyright file="MainWindowViewModel.cs" company="PlaceholderCompany">
+﻿// <copyright file="MainWindowViewModel.cs" company="Okolov Company">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 

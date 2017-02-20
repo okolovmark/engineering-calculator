@@ -1,4 +1,4 @@
-﻿// <copyright file="RPN.cs" company="PlaceholderCompany">
+﻿// <copyright file="RPN.cs" company="Okolov Company">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
