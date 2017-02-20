@@ -117,6 +117,12 @@ namespace Calculator.ViewModels
 
         private void GetDigit(string button)
         {
+            if (_display != null && _display.Length > 32)
+            {
+                DisplayErr = "Введено максимальное количество знаков";
+                return;
+            }
+
             char[] lastSymbol = null;
             if (!DisplayNull())
             {
@@ -187,6 +193,17 @@ namespace Calculator.ViewModels
                     CorrectInputFunc(button);
                     break;
             }
+        }
+
+        private bool CheckMaxLength()
+        {
+            if (_display != null && _display.Length > 32)
+            {
+                DisplayErr = "Введено максимальное количество знаков";
+                return true;
+            }
+
+            return false;
         }
 
         private bool DisplayNull()
@@ -309,6 +326,11 @@ namespace Calculator.ViewModels
                 return;
             }
 
+            if (CheckMaxLength())
+            {
+                return;
+            }
+
             var btn = button.ToCharArray();
             char[] lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
             var symbols = "+-/*^";
@@ -377,6 +399,11 @@ namespace Calculator.ViewModels
                 return;
             }
 
+            if (CheckMaxLength())
+            {
+                return;
+            }
+
             var symbols = "+/*^";
             var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
             if (lastSymbol[0] == '-')
@@ -428,6 +455,11 @@ namespace Calculator.ViewModels
                 return;
             }
 
+            if (CheckMaxLength())
+            {
+                return;
+            }
+
             var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
             const string SymbolsWhereNeedMult = "0123456789)";
             foreach (var i in SymbolsWhereNeedMult)
@@ -453,6 +485,11 @@ namespace Calculator.ViewModels
         private void CorrectLastBracket()
         {
             if (_display == null)
+            {
+                return;
+            }
+
+            if (CheckMaxLength())
             {
                 return;
             }
@@ -489,6 +526,11 @@ namespace Calculator.ViewModels
             if (_display == null)
             {
                 Display = _display + "0";
+            }
+
+            if (CheckMaxLength())
+            {
+                return;
             }
 
             char[] lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
@@ -587,6 +629,11 @@ namespace Calculator.ViewModels
                 return;
             }
 
+            if (CheckMaxLength())
+            {
+                return;
+            }
+
             string digits = "1234567890" + _specialSymbols;
             const string Symbols = "+-/*^(";
             var lastSymbol = _display.Substring(_display.Length - 1);
@@ -611,6 +658,11 @@ namespace Calculator.ViewModels
 
         private void CorrectInputFunc(string button)
         {
+            if (CheckMaxLength())
+            {
+                return;
+            }
+
             if (Display != null)
             {
                 var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
@@ -637,6 +689,11 @@ namespace Calculator.ViewModels
 
         private void GetResult()
         {
+            if (CheckMaxLength())
+            {
+                return;
+            }
+
             bool isTrue;
             CorrectExpression(out isTrue);
             if (!isTrue)
