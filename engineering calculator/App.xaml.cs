@@ -5,6 +5,8 @@
 namespace Calculator
 {
     using System.Windows;
+    using Calculator.ViewModels;
+    using Calculator.Views;
 
     /// <summary>
     /// Логика взаимодействия для App.xaml
@@ -14,8 +16,8 @@ namespace Calculator
         private void OnStartup(object sender, StartupEventArgs e)
         {
             // Create the ViewModel and expose it using the View's DataContext
-            Views.MainWindow view = new Views.MainWindow();
-            view.DataContext = new ViewModels.MainWindowViewModel();
+            MainWindow view = new MainWindow();
+            view.DataContext = new MainWindowViewModel();
             view.Show();
         }
     }

@@ -9,20 +9,20 @@ namespace Calculator.Models
 
     public class RPN
     {
-        //Метод Calculate принимает выражение в виде строки и возвращает результат, в своей работе использует другие методы класса
+        // Метод Calculate принимает выражение в виде строки и возвращает результат, в своей работе использует другие методы класса
         public static double Calculate(string input)
         {
-            var output = GetExpression(input); //Преобразовываем выражение в постфиксную запись
-            var result = Counting(output); //Решаем полученное выражение
-            return result; //Возвращаем результат
+            var output = GetExpression(input); // Преобразовываем выражение в постфиксную запись
+            var result = Counting(output); // Решаем полученное выражение
+            return result; // Возвращаем результат
         }
 
-        //Метод, преобразующий входную строку с выражением в постфиксную запись
+        // Метод, преобразующий входную строку с выражением в постфиксную запись
         private static string GetExpression(string input1)
         {
             var input = input1;
-            var output = string.Empty; //Строка для хранения выражения
-            var operStack = new Stack<char>(); //Стек для хранения операторов
+            var output = string.Empty; // Строка для хранения выражения
+            var operStack = new Stack<char>(); // Стек для хранения операторов
             input = input1.Replace("sin", "s");
             var temp = input;
             input = temp.Replace("cos", "c");
@@ -34,40 +34,44 @@ namespace Calculator.Models
             input = temp.Replace("lg", "l");
             temp = input;
             input = temp.Replace("ln", "n");
-            for (var i = 0; i < input.Length; i++) //Для каждого символа в входной строке
+
+            // Для каждого символа в входной строке
+            for (var i = 0; i < input.Length; i++)
             {
-                //Разделители пропускаем
+                // Разделители пропускаем
                 if (IsDelimeter(input[i]))
                 {
-                    continue; //Переходим к следующему символу
+                    continue; // Переходим к следующему символу
                 }
 
-                if (input[i] == '-' && (i == 0 || i > 0 && (char.IsDigit(input[i - 1]) || input[i - 1] == '(')))
+                if (input[i] == '-' && (i == 0 || (i > 0 && (char.IsDigit(input[i - 1]) || input[i - 1] == '('))))
                 {
                     i++;
-                    output += "-"; //в переменную для чисел добавляется знак "-"
+                    output += "-"; // в переменную для чисел добавляется знак "-"
                 }
 
-                //Если символ - цифра, то считываем все число
-                if (char.IsDigit(input[i])) //Если цифра
+                // Если символ - цифра, то считываем все число
+
+                // Если цифра
+                if (char.IsDigit(input[i]))
                 {
-                    //Читаем до разделителя или оператора, что бы получить число
+                    // Читаем до разделителя или оператора, что бы получить число
                     while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
                     {
-                        output += input[i]; //Добавляем каждую цифру числа к нашей строке
-                        i++; //Переходим к следующему символу
+                        output += input[i]; // Добавляем каждую цифру числа к нашей строке
+                        i++; // Переходим к следующему символу
 
                         if (i == input.Length)
                         {
-                            break; //Если символ - последний, то выходим из цикла
+                            break; // Если символ - последний, то выходим из цикла
                         }
                     }
 
-                    output += " "; //Дописываем после числа пробел в строку с выражением
-                    i--; //Возвращаемся на один символ назад, к символу перед разделителем
+                    output += " "; // Дописываем после числа пробел в строку с выражением
+                    i--; // Возвращаемся на один символ назад, к символу перед разделителем
                 }
 
-                //Если символ - оператор
+                // Если символ - оператор
                 if (!IsOperator(input[i]))
                 {
                     continue;
@@ -76,10 +80,10 @@ namespace Calculator.Models
                 switch (input[i])
                 {
                     case '(':
-                        operStack.Push(input[i]); //Записываем её в стек
+                        operStack.Push(input[i]); // Записываем её в стек
                         break;
                     case ')':
-                        //Выписываем все операторы до открывающей скобки в строку
+                        // Выписываем все операторы до открывающей скобки в строку
                         var s = operStack.Pop();
 
                         while (s != '(')
@@ -89,22 +93,27 @@ namespace Calculator.Models
                         }
 
                         break;
-                    default: //Если любой другой оператор
-                        if (operStack.Count > 0) //Если в стеке есть элементы
+                    default: // Если любой другой оператор
+
+                        // Если в стеке есть элементы
+                        if (operStack.Count > 0)
+                        {
                             if (GetPriority(input[i]) <= GetPriority(operStack.Peek()))
                             {
-                                //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
+                                // И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
                                 output += operStack.Pop() + " ";
                             }
-                        //То добавляем последний оператор из стека в строку с выражением
+                        }
 
+                        // То добавляем последний оператор из стека в строку с выражением
                         operStack.Push(char.Parse(input[i].ToString()));
-                            //Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
+
+                            // Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
                         break;
                 }
             }
 
-            //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
+            // Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
             while (operStack.Count > 0)
             {
                 output += operStack.Pop() + " ";
@@ -113,33 +122,37 @@ namespace Calculator.Models
             do
             {
                 output = output.Replace("--", "-");
-            } while (output.Contains("--"));
+            }
+            while (output.Contains("--"));
 
-            return output; //Возвращаем выражение в постфиксной записи
+            return output; // Возвращаем выражение в постфиксной записи
         }
 
-        //Метод, вычисляющий значение выражения, уже преобразованного в постфиксную запись
+        // Метод, вычисляющий значение выражения, уже преобразованного в постфиксную запись
         private static double Counting(string input)
         {
-            double result = 0; //Результат
-            var temp = new Stack<double>(); //Временный стек для решения
+            double result = 0; // Результат
+            var temp = new Stack<double>(); // Временный стек для решения
 
-            for (var i = 0; i < input.Length; i++) //Для каждого символа в строке
+            // Для каждого символа в строке
+            for (var i = 0; i < input.Length; i++)
             {
                 var x = string.Empty;
-                //если минус первый и после него цифра, то число отрицательное
+
+                // если минус первый и после него цифра, то число отрицательное
                 if (input[i] == '-' && char.IsDigit(input[i + 1]))
                 {
                     x += "-";
                     i++;
                 }
 
-                //Если символ - цифра, то читаем все число и записываем на вершину стека
+                // Если символ - цифра, то читаем все число и записываем на вершину стека
                 if (char.IsDigit(input[i]))
                 {
-                    while (!IsDelimeter(input[i]) && !IsOperator(input[i])) //Пока не разделитель
+                    // Пока не разделитель
+                    while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
                     {
-                        x += input[i]; //Добавляем
+                        x += input[i]; // Добавляем
                         i++;
                         if (i == input.Length)
                         {
@@ -147,11 +160,13 @@ namespace Calculator.Models
                         }
                     }
 
-                    temp.Push(double.Parse(x)); //Записываем в стек
+                    temp.Push(double.Parse(x)); // Записываем в стек
                     // x = string.Empty;
                     i--;
                 }
-                else if (IsOperator(input[i])) //Если символ - оператор
+
+                // Если символ - оператор
+                else if (IsOperator(input[i]))
                 {
                     if (temp.Count == 1)
                     {
@@ -160,11 +175,12 @@ namespace Calculator.Models
                         temp.Push(h);
                     }
 
-                    //Берем два последних значения из стека
+                    // Берем два последних значения из стека
                     var a = temp.Pop();
                     var b = temp.Pop();
 
-                    switch (input[i]) //И производим над ними действие, согласно оператору
+                    // И производим над ними действие, согласно оператору
+                    switch (input[i])
                     {
                         case '+':
                             result = b + a;
@@ -207,25 +223,25 @@ namespace Calculator.Models
                             break;
                     }
 
-                    temp.Push(result); //Результат вычисления записываем обратно в стек
+                    temp.Push(result); // Результат вычисления записываем обратно в стек
                 }
             }
 
-            return temp.Peek(); //Забираем результат всех вычислений из стека и возвращаем его
+            return temp.Peek(); // Забираем результат всех вычислений из стека и возвращаем его
         }
 
-        //Метод возвращает true, если проверяемый символ - разделитель ("пробел" или "равно")
+        // Метод возвращает true, если проверяемый символ - разделитель ("пробел" или "равно")
         private static bool IsDelimeter(char c)
         {
             return " =".IndexOf(c) != -1;
         }
 
-        //Метод возвращает true, если проверяемый символ - оператор
+        // Метод возвращает true, если проверяемый символ - оператор
         private static bool IsOperator(char с)
         {
             return "+-/*^()sctqln".IndexOf(с) != -1;
             /**
-             * s-sin    
+             * s-sin
              * c-cos
              * t-tan
              * q-sqrt
@@ -234,7 +250,7 @@ namespace Calculator.Models
              */
         }
 
-        //Метод возвращает приоритет оператора
+        // Метод возвращает приоритет оператора
         private static byte GetPriority(char s)
         {
             switch (s)

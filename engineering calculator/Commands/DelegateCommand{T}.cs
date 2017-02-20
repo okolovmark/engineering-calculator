@@ -8,24 +8,26 @@ namespace Calculator.Commands
     using System.Collections.Generic;
     using System.Windows.Input;
 
-    public class DelegateCommand : ICommand
+    // This class allows delegating the commanding logic to methods passed as parameters,
+    //     and enables a View to bind commands to objects that are not part of the element tree.
+    public class DelegateCommand<T> : ICommand
     {
-        private readonly Action _executeMethod;
-        private readonly Func<bool> _canExecuteMethod;
+        private readonly Action<T> _executeMethod;
+        private readonly Func<T, bool> _canExecuteMethod;
         private bool _isAutomaticRequeryDisabled;
         private List<WeakReference> _canExecuteChangedHandlers;
 
-        public DelegateCommand(Action executeMethod)
-            : this(executeMethod, null, false)
+        public DelegateCommand(Action<T> executeMethod)
+           : this(executeMethod, null, false)
         {
         }
 
-        public DelegateCommand(Action executeMethod, Func<bool> canExecuteMethod)
+        public DelegateCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod)
             : this(executeMethod, canExecuteMethod, false)
         {
         }
 
-        public DelegateCommand(Action executeMethod, Func<bool> canExecuteMethod, bool isAutomaticRequeryDisabled)
+        public DelegateCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod, bool isAutomaticRequeryDisabled)
         {
             if (executeMethod == null)
             {
@@ -60,6 +62,7 @@ namespace Calculator.Commands
             }
         }
 
+        // Property to enable or disable CommandManager's automatic requery on this command
         public bool IsAutomaticRequeryDisabled
         {
             get
@@ -85,43 +88,48 @@ namespace Calculator.Commands
             }
         }
 
-        // Method to determine if the command can be executed
-        public bool CanExecute()
+        bool ICommand.CanExecute(object parameter)
+        {
+            // if T is of value type and the parameter is not
+            // set yet, then return false if CanExecute delegate
+            // exists, else return true
+            if (parameter == null &&
+                typeof(T).IsValueType)
+            {
+                return _canExecuteMethod == null;
+            }
+
+            return CanExecute((T)parameter);
+        }
+
+        void ICommand.Execute(object parameter)
+        {
+            Execute((T)parameter);
+        }
+
+        public bool CanExecute(T parameter)
         {
             if (_canExecuteMethod != null)
             {
-                return _canExecuteMethod();
+                return _canExecuteMethod(parameter);
             }
 
             return true;
         }
 
         // Execution of the command
-        public void Execute()
+        public void Execute(T parameter)
         {
             if (_executeMethod != null)
             {
-                _executeMethod();
+                _executeMethod(parameter);
             }
         }
-
-        // Property to enable or disable CommandManager's automatic requery on this command
 
         // Raises the CanExecuteChaged event
         public void RaiseCanExecuteChanged()
         {
             OnCanExecuteChanged();
-        }
-
-        // ICommand.CanExecuteChanged implementation
-        bool ICommand.CanExecute(object parameter)
-        {
-            return CanExecute();
-        }
-
-        void ICommand.Execute(object parameter)
-        {
-            Execute();
         }
 
         // Protected virtual method to raise CanExecuteChanged event

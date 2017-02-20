@@ -10,7 +10,7 @@ namespace Calculator.Commands
 
     public class CommandReference : Freezable, ICommand
     {
-        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register("Command", typeof(ICommand), typeof(CommandReference), new PropertyMetadata(new PropertyChangedCallback(OnCommandChanged)));
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register("Command", typeof(ICommand), typeof(CommandReference), new PropertyMetadata(OnCommandChanged));
 
         public event EventHandler CanExecuteChanged;
 
