@@ -531,6 +531,8 @@ namespace Calculator.ViewModels
             complete = true;
             string subString1 = "бесконечность";
             string subString2 = "NaN";
+            string subString3 = "E";
+            string subString4 = "e";
             char[] lastSymbol = null;
 
             if (_display != null)
@@ -545,10 +547,13 @@ namespace Calculator.ViewModels
             }
 
             if (Display.IndexOf(subString1, StringComparison.Ordinal) > -1 ||
-                Display.IndexOf(subString2, StringComparison.Ordinal) > -1)
+                Display.IndexOf(subString2, StringComparison.Ordinal) > -1 ||
+                Display.IndexOf(subString3, StringComparison.Ordinal) > -1 ||
+                Display.IndexOf(subString4, StringComparison.Ordinal) > -1)
             {
                 _countOpenBracket = 0;
                 Display = null;
+                DisplayErr = "Неверное выражение";
                 complete = false;
                 return;
             }
@@ -558,7 +563,7 @@ namespace Calculator.ViewModels
             {
                 if (lastSymbol[0] == i)
                 {
-                    DisplayErr = "введите второе число или функцию";
+                    DisplayErr = "Введите второе число или функцию";
                     complete = false;
                     return;
                 }
@@ -566,14 +571,14 @@ namespace Calculator.ViewModels
 
             if (lastSymbol[0] == ',')
             {
-                DisplayErr = "закончите нецелое число";
+                DisplayErr = "Закончите нецелое число";
                 complete = false;
                 return;
             }
 
             if (lastSymbol[0] == '(')
             {
-                DisplayErr = "завершите выражение со скобками";
+                DisplayErr = "Завершите выражение со скобками";
                 complete = false;
                 return;
             }
