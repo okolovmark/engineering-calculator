@@ -34,6 +34,12 @@ namespace Calculator.Models
             input = temp.Replace("lg", "l");
             temp = input;
             input = temp.Replace("ln", "n");
+            temp = input;
+            input = temp.Replace("fct", "f");
+            temp = input;
+            input = temp.Replace("π", "3,14159265359");
+            temp = input;
+            input = temp.Replace("e", "2,71828182846");
 
             // Для каждого символа в входной строке
             for (var i = 0; i < input.Length; i++)
@@ -44,7 +50,7 @@ namespace Calculator.Models
                     continue; // Переходим к следующему символу
                 }
 
-                if (input[i] == '-' && (i == 0 || (i > 0 && (char.IsDigit(input[i - 1]) || input[i - 1] == '('))))
+                if (input[i] == '-' && (i == 0 || (i > 0 && (!char.IsDigit(input[i - 1]) || input[i - 1] == '('))))
                 {
                     i++;
                     output += "-"; // в переменную для чисел добавляется знак "-"
@@ -221,6 +227,16 @@ namespace Calculator.Models
                             result = Math.Log(a);
                             temp.Push(b);
                             break;
+                        case 'f':
+                            double f = 1;
+                            for (var s = a; s > 1; s--)
+                            {
+                                f = f * s;
+                            }
+
+                            result = f;
+                            temp.Push(b);
+                            break;
                     }
 
                     temp.Push(result); // Результат вычисления записываем обратно в стек
@@ -239,7 +255,7 @@ namespace Calculator.Models
         // Метод возвращает true, если проверяемый символ - оператор
         private static bool IsOperator(char с)
         {
-            return "+-/*^()sctqln".IndexOf(с) != -1;
+            return "+-/*^()sctqlnf".IndexOf(с) != -1;
             /**
              * s-sin
              * c-cos
@@ -247,6 +263,7 @@ namespace Calculator.Models
              * q-sqrt
              * l-log
              * n-ln
+             * f-fct
              */
         }
 
@@ -280,6 +297,8 @@ namespace Calculator.Models
                 case 'l':
                     return 5;
                 case 'n':
+                    return 5;
+                case 'f':
                     return 5;
                 default:
                     return 6;

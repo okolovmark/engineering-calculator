@@ -21,6 +21,7 @@ namespace Calculator.ViewModels
         private string _displayExp;
         private string _displayErr;
         private int _countOpenBracket;
+        private string _specialSymbols = "πe";
 
         public string Display
         {
@@ -104,400 +105,522 @@ namespace Calculator.ViewModels
             }
         }
 
-        public void GetDigit(string button) // вводим числа
+        private static bool CanResultButtonPress()
         {
+            return true;
+        }
+
+        private static bool CanDigitButtonPress(string button)
+        {
+            return true;
+        }
+
+        private void GetDigit(string button)
+        {
+            char[] lastSymbol = null;
+            if (!DisplayNull())
+            {
+                lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
+            }
+
+            if (lastSymbol == null)
+            {
+                Display = _display + button;
+                DisplayErr = null;
+                return;
+            }
+
+            foreach (var ss in _specialSymbols)
+            {
+                if (lastSymbol[0] == ss)
+                {
+                    DisplayErr = "Введите математическое действие";
+                    return;
+                }
+            }
+
             Display = _display + button;
             DisplayErr = null;
         }
 
-        public bool DisplayNull()
+        private void DigitButtonPress(string button)
+        {
+            switch (button)
+            {
+                case "C":
+                    Display = null;
+                    DisplayErr = null;
+                    _countOpenBracket = 0;
+                    break;
+                case "Del":
+                    CorrectInputDel();
+                    break;
+                case "(":
+                    CorrectFirstBracket();
+                    break;
+                case ")":
+                    CorrectLastBracket();
+                    break;
+                case "-":
+                    CorrectInputMinus();
+                    break;
+                case "+":
+                case "/":
+                case "*":
+                case "^":
+                    CorrectInputOperator(button);
+                    break;
+                case ",":
+                    CorrectInputPoint(button);
+                    break;
+                case "e":
+                case "π":
+                    CorrectInputSpecialSymbol(button);
+                    break;
+                case "sin":
+                case "cos":
+                case "tan":
+                case "√":
+                case "lg":
+                case "fct":
+                case "ln":
+                    CorrectInputFunc(button);
+                    break;
+            }
+        }
+
+        private bool DisplayNull()
         {
             if (_display == string.Empty)
             {
                 Display = null;
             }
 
-            if (Display == null)
-            {
-                return true;
-            }
-
-            return false;
+            return Display == null;
         }
 
-        public void DigitButtonPress(string button) // вводим операторы
+        private void CorrectInputDel()
         {
-            switch (button)
+            if (Display == null)
             {
-                case "C": // очищаем поле
-                    Display = null;
-                    _countOpenBracket = 0;
-                    break;
-                case "Del": // backspace
+                return;
+            }
+
+            if (Display.Length == 1)
+            {
+                DisplayErr = null;
+                Display = null;
+                return;
+            }
+
+            char[] lastSymbol = null;
+            if (!DisplayNull())
+            {
+                lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
+            }
+
+            if (lastSymbol == null)
+            {
+                return;
+            }
+
+            if (lastSymbol[0] == ')')
+            {
+                _countOpenBracket++;
+            }
+
+            var doif = false;
+            if (lastSymbol[0] == '(' && _display.Length > 2 && _display.Length < 4 &&
+                char.IsLetter(_display.ElementAt(_display.Length - 2)) &&
+                char.IsLetter(_display.ElementAt(_display.Length - 3)))
+            {
+                Display = _display.Substring(0, _display.Length - 3);
+                DisplayErr = null;
+                doif = true;
+                if (DisplayNull())
                 {
-                    if (Display == null)
-                    {
-                        break;
-                    }
-
-                    if (Display.Length == 1)
-                    {
-                        Display = null;
-                        break;
-                    }
-
-                    char[] lastSymbol = null;
-                    if (!DisplayNull())
-                    {
-                        lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-                    }
-
-                    if (lastSymbol == null)
-                    {
-                        break;
-                    }
-
-                    if (lastSymbol[0] == ')')
-                    {
-                        _countOpenBracket++;
-                    }
-
-                    var doif = false;
-                    if (lastSymbol[0] == '(' && _display.Length > 2 && _display.Length < 4 &&
-                        char.IsLetter(_display.ElementAt(_display.Length - 2)) &&
-                        char.IsLetter(_display.ElementAt(_display.Length - 3)))
-                    {
-                        Display = _display.Substring(0, _display.Length - 3);
-                        doif = true;
-                        if (DisplayNull())
-                        {
-                            break;
-                        }
-
-                        lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-                        _countOpenBracket--;
-                    }
-
-                    if (lastSymbol[0] == '(' && _display.Length > 3 &&
-                        char.IsLetter(_display.ElementAt(_display.Length - 2)) &&
-                        char.IsLetter(_display.ElementAt(_display.Length - 3)) &&
-                        !char.IsLetter(_display.ElementAt(_display.Length - 4)))
-                    {
-                        Display = _display.Substring(0, _display.Length - 3);
-                        doif = true;
-                        if (DisplayNull())
-                        {
-                            break;
-                        }
-
-                        lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-                        _countOpenBracket--;
-                    }
-
-                    if (lastSymbol[0] == '(' && _display.Length > 3 &&
-                        char.IsLetter(_display.ElementAt(_display.Length - 2)) &&
-                        char.IsLetter(_display.ElementAt(_display.Length - 3)) &&
-                        char.IsLetter(_display.ElementAt(_display.Length - 4)))
-                    {
-                        Display = _display.Substring(0, _display.Length - 4);
-                        doif = true;
-                        if (DisplayNull())
-                        {
-                            break;
-                        }
-
-                        lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-                        _countOpenBracket--;
-                    }
-
-                    if (lastSymbol[0] == '(' && _display.Length > 1 &&
-                        !char.IsLetter(_display.ElementAt(_display.Length - 2)))
-                    {
-                        Display = _display.Substring(0, _display.Length - 2);
-                        doif = true;
-                        if (DisplayNull())
-                        {
-                            break;
-                        }
-
-                        _countOpenBracket--;
-                    }
-
-                    if (!doif)
-                    {
-                        Display = _display.Substring(0, _display.Length - 1);
-                    }
-
-                    break;
+                    return;
                 }
 
-                case "(":
+                lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
+                _countOpenBracket--;
+            }
+
+            if (lastSymbol[0] == '(' && _display.Length > 3 &&
+                char.IsLetter(_display.ElementAt(_display.Length - 2)) &&
+                char.IsLetter(_display.ElementAt(_display.Length - 3)) &&
+                !char.IsLetter(_display.ElementAt(_display.Length - 4)))
+            {
+                Display = _display.Substring(0, _display.Length - 3);
+                DisplayErr = null;
+                doif = true;
+                if (DisplayNull())
                 {
-                    if (_display == null)
-                    {
-                        Display = _display + "(";
-                        _countOpenBracket++;
-                        break;
-                    }
-
-                    var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-                    const string SymbolsWhereNeedMult = "0123456789)";
-                    foreach (var i in SymbolsWhereNeedMult)
-                    {
-                        if (lastSymbol[0] != i)
-                        {
-                            continue;
-                        }
-
-                        Display = _display + "*";
-                        break;
-                    }
-
-                    if (lastSymbol[0] == '(')
-                    {
-                        break;
-                    }
-
-                    _countOpenBracket++;
-                    Display = _display + button;
-                    break;
+                    return;
                 }
 
-                case ")":
+                lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
+                _countOpenBracket--;
+            }
+
+            if (lastSymbol[0] == '(' && _display.Length > 3 &&
+                char.IsLetter(_display.ElementAt(_display.Length - 2)) &&
+                char.IsLetter(_display.ElementAt(_display.Length - 3)) &&
+                char.IsLetter(_display.ElementAt(_display.Length - 4)))
+            {
+                Display = _display.Substring(0, _display.Length - 4);
+                DisplayErr = null;
+                doif = true;
+                if (DisplayNull())
                 {
-                    if (_display == null)
-                    {
-                        break;
-                    }
-
-                    var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-                    const string Symbols = "(,+-/*^";
-                    var isTrue = false;
-                    if (lastSymbol[0] == '(')
-                    {
-                        break;
-                    }
-
-                    if (_countOpenBracket > 0)
-                    {
-                        foreach (var i in Symbols)
-                        {
-                            if (lastSymbol[0] == i)
-                            {
-                                isTrue = true;
-                                break;
-                            }
-                        }
-
-                        if (!isTrue)
-                        {
-                            _countOpenBracket--;
-                            Display = _display + button;
-                        }
-                    }
-
-                    break;
+                    return;
                 }
 
-                case "-":
+                lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
+                _countOpenBracket--;
+            }
+
+            if (lastSymbol[0] == '(' && _display.Length > 1 &&
+                !char.IsLetter(_display.ElementAt(_display.Length - 2)))
+            {
+                Display = _display.Substring(0, _display.Length - 2);
+                DisplayErr = null;
+                doif = true;
+                if (DisplayNull())
                 {
-                    if (_display == null)
-                    {
-                        Display = _display + button;
-                        break;
-                    }
-
-                    char[] lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-                    if (_display == "-")
-                    {
-                        break;
-                    }
-
-                    if (_display.Length == 1 || lastSymbol[0] == '(')
-                    {
-                        Display = _display + button;
-                        break;
-                    }
-
-                    if (char.IsDigit(_display.ElementAt(_display.Length - 1)) ||
-                        (_display.ElementAt(_display.Length - 2) == '(' &&
-                         char.IsDigit(_display.ElementAt(_display.Length - 3))))
-                    {
-                        Display = _display + button;
-                    }
-
-                    break;
+                    return;
                 }
 
-                case "+":
-                case "/":
-                case "*":
-                case "^":
+                _countOpenBracket--;
+            }
+
+            if (!doif)
+            {
+                Display = _display.Substring(0, _display.Length - 1);
+                DisplayErr = null;
+            }
+        }
+
+        private void CorrectInputOperator(string button)
+        {
+            if (_display == null)
+            {
+                DisplayErr = "Введите число или функцию";
+                return;
+            }
+
+            var btn = button.ToCharArray();
+            char[] lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
+            var symbols = "+-/*^";
+            if (lastSymbol[0] == '(')
+            {
+                return;
+            }
+
+             if (lastSymbol[0] == btn[0])
+            {
+                DisplayErr = "Введите число или функцию";
+                return;
+            }
+
+            if (lastSymbol[0] == ',')
+            {
+                DisplayErr = "Закончите число";
+                return;
+            }
+
+            char[] prelastSymbol = null;
+            if (_display.Length > 1)
+            {
+                prelastSymbol = _display.Substring(_display.Length - 2).ToCharArray();
+            }
+
+            foreach (var i in symbols)
+            {
+                if (lastSymbol[0] == i && prelastSymbol == null)
                 {
-                    if (_display == null)
-                    {
-                        break;
-                    }
-
-                    char[] lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-                    var symbols = ",+-/*^";
-                    bool isequal = false;
-                    if (lastSymbol[0] == '(')
-                    {
-                        break;
-                    }
-
-                    foreach (var i in symbols)
-                    {
-                        if (lastSymbol[0] == i)
-                        {
-                            isequal = true;
-                            DisplayErr = "введите второе число или функцию";
-                            break;
-                        }
-                    }
-
-                    if (isequal)
-                    {
-                        break;
-                    }
-
-                    Display = _display + button;
+                    Display = _display.Substring(0, _display.Length - 1) + button;
                     DisplayErr = null;
+                    return;
+                }
+
+                if (lastSymbol[0] == i && char.IsDigit(prelastSymbol[0]))
+                {
+                    Display = _display.Substring(0, _display.Length - 1) + button;
+                    DisplayErr = null;
+                    return;
+                }
+
+                if (lastSymbol[0] == '-' && prelastSymbol == null)
+                {
+                    DisplayErr = "Введите число или функцию";
+                    return;
+                }
+
+                if (lastSymbol[0] == '-' && prelastSymbol[0] == i)
+                {
+                    DisplayErr = "Введите число или функцию";
+                    return;
+                }
+            }
+
+            Display = _display + button;
+            DisplayErr = null;
+        }
+
+        private void CorrectInputMinus()
+        {
+            if (_display == null)
+            {
+                Display = _display + '-';
+                DisplayErr = null;
+                return;
+            }
+
+            var symbols = "+/*^";
+            var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
+            if (lastSymbol[0] == '-')
+            {
+                DisplayErr = "Введите число или функцию";
+                return;
+            }
+
+            if (lastSymbol[0] == ',')
+            {
+                DisplayErr = "Закончите число";
+                return;
+            }
+
+            if ((_display.Length == 1 || lastSymbol[0] == '(') || lastSymbol[0] == ')')
+            {
+                Display = _display + '-';
+                DisplayErr = null;
+                return;
+            }
+
+            foreach (var sy in symbols)
+            {
+                if (lastSymbol[0] == sy)
+                {
+                    Display = _display.Substring(0, _display.Length - 1) + '-';
+                    DisplayErr = null;
+                    return;
+                }
+            }
+
+            if (char.IsDigit(_display.ElementAt(_display.Length - 1)) ||
+                (_display.ElementAt(_display.Length - 1) == '(' &&
+                 (_display.ElementAt(_display.Length - 3) == ')' ||
+                  char.IsDigit(_display.ElementAt(_display.Length - 3)) ||
+                  char.IsLetter(_display.ElementAt(_display.Length - 3)))))
+            {
+                Display = _display + '-';
+                DisplayErr = null;
+            }
+        }
+
+        private void CorrectFirstBracket()
+        {
+            if (_display == null)
+            {
+                Display = _display + "(";
+                _countOpenBracket++;
+                return;
+            }
+
+            var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
+            const string SymbolsWhereNeedMult = "0123456789)";
+            foreach (var i in SymbolsWhereNeedMult)
+            {
+                if (lastSymbol[0] != i)
+                {
+                    continue;
+                }
+
+                Display = _display + "*";
+                break;
+            }
+
+            if (lastSymbol[0] == '(' || lastSymbol[0] == ',')
+            {
+                return;
+            }
+
+            _countOpenBracket++;
+            Display = _display + '(';
+        }
+
+        private void CorrectLastBracket()
+        {
+            if (_display == null)
+            {
+                return;
+            }
+
+            var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
+            const string Symbols = "(,+-/*^";
+            var isTrue = false;
+            if (lastSymbol[0] == '(')
+            {
+                return;
+            }
+
+            if (_countOpenBracket > 0)
+            {
+                foreach (var i in Symbols)
+                {
+                    if (lastSymbol[0] == i)
+                    {
+                        isTrue = true;
+                        break;
+                    }
+                }
+
+                if (!isTrue)
+                {
+                    _countOpenBracket--;
+                    Display = _display + ')';
+                }
+            }
+        }
+
+        private void CorrectInputPoint(string button)
+        {
+            if (_display == null)
+            {
+                Display = _display + "0";
+            }
+
+            char[] lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
+            foreach (var ss in _specialSymbols)
+            {
+                if (lastSymbol[0] == ss)
+                {
+                    DisplayErr = "К специальным символам нельзя ставить точку";
+                    return;
+                }
+            }
+
+            const string Symbols = "+-/*^";
+            const string digits = "0123456789";
+            if (_display != null)
+            {
+                var reverseDisplay = new string(_display.ToCharArray().Reverse().ToArray());
+                string tempDisplay = null;
+                var isHaveDigit = false;
+                var isHaveOperation = false;
+                var isHavePoint = false;
+
+                for (var i = 0; i < reverseDisplay.Length; i++)
+                {
+                    if (reverseDisplay[i] != ',')
+                    {
+                        continue;
+                    }
+
+                    isHavePoint = true;
+                    tempDisplay = reverseDisplay.Substring(0, i);
                     break;
                 }
 
-                case ",":
+                if (isHavePoint)
                 {
-                    if (_display == null)
+                    foreach (var i in tempDisplay)
                     {
-                        Display = _display + "0";
-                    }
-
-                    const string Symbols = "+-/*^";
-                    const string digits = "0123456789";
-                    if (_display != null)
-                    {
-                        var reverseDisplay = new string(_display.ToCharArray().Reverse().ToArray());
-                        string tempDisplay = null;
-                        var isHaveDigit = false;
-                        var isHaveOperation = false;
-                        var isHavePoint = false;
-
-                        for (var i = 0; i < reverseDisplay.Length; i++)
+                        if (!isHaveOperation)
                         {
-                            if (reverseDisplay[i] != ',')
+                            if (digits.Any(j => i == j))
+                            {
+                                isHaveOperation = true;
+                            }
+
+                            if (isHaveOperation && !isHaveDigit)
                             {
                                 continue;
                             }
-
-                            isHavePoint = true;
-                            tempDisplay = reverseDisplay.Substring(0, i);
-                            break;
                         }
 
-                        if (isHavePoint)
+                        if (!isHaveDigit)
                         {
-                            foreach (var i in tempDisplay)
+                            if (Symbols.Any(j => i == j))
                             {
-                                if (!isHaveOperation)
-                                {
-                                    if (digits.Any(j => i == j))
-                                    {
-                                        isHaveOperation = true;
-                                    }
+                                isHaveDigit = true;
+                            }
 
-                                    if (isHaveOperation && !isHaveDigit)
-                                    {
-                                        continue;
-                                    }
-                                }
-
-                                if (!isHaveDigit)
-                                {
-                                    if (Symbols.Any(j => i == j))
-                                    {
-                                        isHaveDigit = true;
-                                    }
-
-                                    if (isHaveDigit && !isHaveOperation)
-                                    {
-                                        continue;
-                                    }
-                                }
-
-                                if (isHaveDigit && isHaveOperation)
-                                {
-                                    var lastSymbol1 = _display.Substring(_display.Length - 1).ToCharArray();
-                                    foreach (var j in Symbols)
-                                    {
-                                        if (lastSymbol1[0] != j)
-                                        {
-                                            continue;
-                                        }
-
-                                        Display = _display + "0";
-                                        break;
-                                    }
-
-                                    Display = _display + button;
-                                    break;
-                                }
+                            if (isHaveDigit && !isHaveOperation)
+                            {
+                                continue;
                             }
                         }
-                        else
+
+                        if (isHaveDigit && isHaveOperation)
                         {
+                            var lastSymbol1 = _display.Substring(_display.Length - 1).ToCharArray();
+                            foreach (var j in Symbols)
+                            {
+                                if (lastSymbol1[0] != j)
+                                {
+                                    continue;
+                                }
+
+                                Display = _display + "0";
+                                break;
+                            }
+
                             Display = _display + button;
+                            break;
                         }
                     }
-
-                    break;
                 }
-
-                case "sin":
+                else
                 {
-                    CorrectInputFunc(button);
-                    break;
-                }
-
-                case "cos":
-                {
-                    CorrectInputFunc(button);
-                    break;
-                }
-
-                case "tan":
-                {
-                    CorrectInputFunc(button);
-                    break;
-                }
-
-                case "√":
-                {
-                    CorrectInputFunc(button);
-                    break;
-                }
-
-                case "lg":
-                {
-                    CorrectInputFunc(button);
-                    break;
-                }
-
-                case "ln":
-                {
-                    CorrectInputFunc(button);
-                    break;
+                    Display = _display + button;
                 }
             }
         }
 
-        public void CorrectInputFunc(string button)
+        private void CorrectInputSpecialSymbol(string button)
+        {
+            if (Display == null)
+            {
+                Display = _display + button;
+                return;
+            }
+
+            string digits = "1234567890" + _specialSymbols;
+            const string Symbols = "+-/*^(";
+            var lastSymbol = _display.Substring(_display.Length - 1);
+            foreach (var ss in digits)
+            {
+                if (lastSymbol[0] == ss)
+                {
+                    Display = _display + '*' + button;
+                    return;
+                }
+            }
+
+            foreach (var sy in Symbols)
+            {
+                if (lastSymbol[0] == sy)
+                {
+                    Display = _display + button;
+                    return;
+                }
+            }
+        }
+
+        private void CorrectInputFunc(string button)
         {
             if (Display != null)
             {
                 var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-                var digits = "1234567890";
+                var digits = "1234567890" + _specialSymbols;
+                if (lastSymbol[0] == '-' && _display.Length == 1)
+                {
+                    DisplayErr = "Введите число";
+                    return;
+                }
+
                 foreach (var i in digits)
                 {
                     if (lastSymbol[0] == i)
@@ -512,8 +635,7 @@ namespace Calculator.ViewModels
             _countOpenBracket++;
         }
 
-        // вычисляет выражение
-        public void GetResult()
+        private void GetResult()
         {
             bool isTrue;
             CorrectExpression(out isTrue);
@@ -526,13 +648,12 @@ namespace Calculator.ViewModels
             Display = RPN.Calculate(Display).ToString(CultureInfo.CurrentCulture);
         }
 
-        public void CorrectExpression(out bool complete) // приводит выражение в корректный вид
+        private void CorrectExpression(out bool complete)
         {
             complete = true;
             string subString1 = "бесконечность";
             string subString2 = "NaN";
             string subString3 = "E";
-            string subString4 = "e";
             char[] lastSymbol = null;
 
             if (_display != null)
@@ -548,8 +669,7 @@ namespace Calculator.ViewModels
 
             if (Display.IndexOf(subString1, StringComparison.Ordinal) > -1 ||
                 Display.IndexOf(subString2, StringComparison.Ordinal) > -1 ||
-                Display.IndexOf(subString3, StringComparison.Ordinal) > -1 ||
-                Display.IndexOf(subString4, StringComparison.Ordinal) > -1)
+                Display.IndexOf(subString3, StringComparison.Ordinal) > -1)
             {
                 _countOpenBracket = 0;
                 Display = null;
@@ -597,16 +717,6 @@ namespace Calculator.ViewModels
             }
 
             DisplayErr = null;
-        }
-
-        private static bool CanResultButtonPress()
-        {
-            return true;
-        }
-
-        private static bool CanDigitButtonPress(string button)
-        {
-            return true;
         }
     }
 }
