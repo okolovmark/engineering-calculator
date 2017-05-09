@@ -1,0 +1,17 @@
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ViewModels="clr-namespace:Calculator.ViewModels" x:Name="CalculatorHistory" x:Class="Calculator.Views.WindowHistory"
+        mc:Ignorable="d"
+        Title="CalculatorHistory" 
+        ResizeMode="CanResize" Background="#FFF7F7F7" Foreground="Black" Visibility="Visible" Cursor="Arrow" Height="300" Width="300">
+    
+    <Window.DataContext>
+        <ViewModels:WindowHistoryViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <TextBox Text="{Binding DisplayHistory, Mode=OneWay}" FontSize="16" FontStyle="Italic"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True" />
+    </Grid>
+</Window>
+

@@ -1,4 +1,4 @@
-﻿// <copyright file="MainWindow.xaml.cs" company="PlaceholderCompany">
+﻿// <copyright file="WindowHistory.xaml.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -7,11 +7,11 @@ namespace Calculator.Views
     using System.Windows;
 
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Interaction logic for WindowHistory.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class WindowHistory : Window
     {
-        public MainWindow()
+        public WindowHistory()
         {
             InitializeComponent();
         }

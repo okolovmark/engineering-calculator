@@ -5,30 +5,33 @@
 namespace Calculator.ViewModels
 {
     using System;
+    using System.Diagnostics;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Windows.Input;
     using Commands;
     using Models;
+    using Newtonsoft.Json;
+    using Views;
 
     internal class MainWindowViewModel : ViewModelBase
     {
         private DelegateCommand<string> _digitButtonPressCommand;
         private DelegateCommand<string> _getDigitCommand;
         private DelegateCommand _getResultCommand;
+        private DelegateCommand _showHistoryCommand;
 
         private string _display;
         private string _displayExp;
+        private string _displayHistory;
         private string _displayErr;
         private int _countOpenBracket;
         private string _specialSymbols = "πe";
 
         public string Display
         {
-            get
-            {
-                return _display;
-            }
+            get => _display;
 
             set
             {
@@ -39,10 +42,7 @@ namespace Calculator.ViewModels
 
         public string DisplayExp
         {
-            get
-            {
-                return _displayExp;
-            }
+            get => _displayExp;
 
             set
             {
@@ -105,7 +105,36 @@ namespace Calculator.ViewModels
             }
         }
 
+        public ICommand ShowHistoryCommand
+        {
+            get
+            {
+                if (_showHistoryCommand == null)
+                {
+                    _showHistoryCommand = new DelegateCommand(ShowHistory, CanShowHistoryButtonPress);
+                }
+
+                return _showHistoryCommand;
+            }
+        }
+
+        private string DisplayHistory
+        {
+            get => _displayHistory;
+
+            set
+            {
+                _displayHistory = value;
+                OnPropertyChanged("DisplayHistory");
+            }
+        }
+
         private static bool CanResultButtonPress()
+        {
+            return true;
+        }
+
+        private static bool CanShowHistoryButtonPress()
         {
             return true;
         }
@@ -565,6 +594,19 @@ namespace Calculator.ViewModels
                     break;
                 }
 
+                if (!isHavePoint)
+                {
+                    var lastSymbol1 = _display.Substring(_display.Length - 1).ToCharArray();
+                    foreach (var j in Symbols)
+                    {
+                        if (lastSymbol1[0] == j)
+                        {
+                            Display = _display + "0";
+                            break;
+                        }
+                    }
+                }
+
                 if (isHavePoint)
                 {
                     foreach (var i in tempDisplay)
@@ -600,13 +642,11 @@ namespace Calculator.ViewModels
                             var lastSymbol1 = _display.Substring(_display.Length - 1).ToCharArray();
                             foreach (var j in Symbols)
                             {
-                                if (lastSymbol1[0] != j)
+                                if (lastSymbol1[0] == j)
                                 {
-                                    continue;
+                                    Display = _display + "0";
+                                    break;
                                 }
-
-                                Display = _display + "0";
-                                break;
                             }
 
                             Display = _display + button;
@@ -687,6 +727,21 @@ namespace Calculator.ViewModels
             _countOpenBracket++;
         }
 
+        private void AddDisplayHistory()
+        {
+            if (_displayHistory != null)
+            {
+                DisplayHistory += "\n" + DisplayExp + " = " + Display;
+            }
+            else
+            {
+                DisplayHistory = DisplayExp + " = " + Display;
+            }
+
+            var json = JsonConvert.SerializeObject(DisplayHistory);
+            File.WriteAllText("history.json", json);
+        }
+
         private void GetResult()
         {
             if (CheckMaxLength())
@@ -703,6 +758,13 @@ namespace Calculator.ViewModels
 
             DisplayExp = Display;
             Display = RPN.Calculate(Display).ToString(CultureInfo.CurrentCulture);
+            AddDisplayHistory();
+        }
+
+        private void ShowHistory()
+        {
+            var windowHistory = new WindowHistory();
+            windowHistory.Show();
         }
 
         private void CorrectExpression(out bool complete)

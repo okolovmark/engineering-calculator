@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ViewModels="clr-namespace:Calculator.ViewModels" x:Name="calculator" x:Class="Calculator.Views.MainWindow"
+        xmlns:ViewModels="clr-namespace:Calculator.ViewModels" x:Name="Calculator" x:Class="Calculator.Views.MainWindow"
         mc:Ignorable="d"
-        Title="calculator"
+        Title="Calculator"
         ResizeMode="CanResize" Background="#FFF7F7F7" Foreground="Black" Visibility="Visible" Cursor="Arrow" MinWidth="200" MinHeight="300" Width="400">
     <Window.Resources>
         <Style x:Key="DigitBtn" TargetType="{x:Type Button}">
@@ -55,6 +55,7 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -62,7 +63,6 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
-
         </Grid.ColumnDefinitions>
         <Canvas Grid.ColumnSpan="5" Grid.RowSpan="5" Grid.Row="4" Background="#EEEEEEEE"/>
         <Viewbox Stretch="Uniform" HorizontalAlignment="right" Margin="0,32.583,0,0" Grid.RowSpan="2" Grid.ColumnSpan="5">
@@ -74,7 +74,7 @@
         <Viewbox Stretch="Uniform" Grid.ColumnSpan="5" Grid.Row="2" HorizontalAlignment="Stretch">
             <TextBlock x:Name="DisplayBox2" FontSize="20" FontWeight="ExtraLight" Foreground="Brown"   TextWrapping="Wrap" Text="{Binding DisplayErr, Mode=TwoWay}"/>
         </Viewbox>
-        <Line Grid.ColumnSpan="5" Grid.Row="2" VerticalAlignment="Bottom" Stroke="#AA888888" X2="{Binding ElementName=calculator, Path=ActualWidth}" />
+        <Line Grid.ColumnSpan="5" Grid.Row="2" VerticalAlignment="Bottom" Stroke="#AA888888" X2="{Binding ElementName=Calculator, Path=ActualWidth}" />
         <Button x:Name="button_plus" Content="+" Command="{Binding DigitButtonPressCommand}" CommandParameter="+" Style="{StaticResource DigitBtn}" Grid.Row="7" Grid.Column="4"/>
         <Button x:Name="button_minus" Content="-" Command="{Binding DigitButtonPressCommand}" CommandParameter="-" Style="{StaticResource DigitBtn}" Grid.Row="6" Grid.Column="4"/>
         <Button x:Name="button_multiply" Content="*" Command="{Binding DigitButtonPressCommand}" CommandParameter="*" Style="{StaticResource DigitBtn}" Grid.Row="4" Grid.Column="4"/>
@@ -105,5 +105,7 @@
         <Button x:Name="button_Del" Content="⇦" Command="{Binding DigitButtonPressCommand}" CommandParameter="Del" Grid.Column="3" Style="{StaticResource DigitBtn}" Grid.Row="4" />
         <Button x:Name="button_open_bracket" Content="(" Command="{Binding DigitButtonPressCommand}" CommandParameter="(" Style="{StaticResource DigitBtn}" Grid.Row="8" />
         <Button x:Name="button1_close_bracket" Content=")" Command="{Binding DigitButtonPressCommand}" CommandParameter=")" Style="{StaticResource DigitBtn}" Grid.Column="1" Grid.Row="8" />
+        <Button x:Name="history" Content="history" Command="{Binding ShowHistoryCommand}" CommandParameter="" Style="{StaticResource DigitBtn}" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="2"/>
+
     </Grid>
 </Window>
