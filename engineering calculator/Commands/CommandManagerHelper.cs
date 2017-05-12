@@ -12,7 +12,7 @@ namespace Calculator.Commands
     ///     This class contains methods for the CommandManager that help avoid memory leaks by
     ///     using weak references.
     /// </summary>
-    internal class CommandManagerHelper
+    internal static class CommandManagerHelper
     {
         internal static void CallWeakReferenceHandlers(List<WeakReference> handlers)
         {
@@ -40,9 +40,9 @@ namespace Calculator.Commands
                 }
 
                 // Call the handlers that we snapshotted
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
-                    EventHandler handler = callees[i];
+                    var handler = callees[i];
                     handler(null, EventArgs.Empty);
                 }
             }
@@ -52,9 +52,9 @@ namespace Calculator.Commands
         {
             if (handlers != null)
             {
-                foreach (WeakReference handlerRef in handlers)
+                foreach (var handlerRef in handlers)
                 {
-                    EventHandler handler = handlerRef.Target as EventHandler;
+                    var handler = handlerRef.Target as EventHandler;
                     if (handler != null)
                     {
                         CommandManager.RequerySuggested += handler;

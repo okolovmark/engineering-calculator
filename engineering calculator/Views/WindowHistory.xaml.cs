@@ -15,5 +15,11 @@ namespace Calculator.Views
         {
             InitializeComponent();
         }
+
+        public WindowHistory(string history)
+            : this()
+        {
+            DataContext = history;
+        }
     }
 }

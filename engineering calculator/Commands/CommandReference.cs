@@ -16,18 +16,13 @@ namespace Calculator.Commands
 
         public ICommand Command
         {
-            get { return (ICommand)GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
+            get => (ICommand)GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
 
         public bool CanExecute(object parameter)
         {
-            if (Command != null)
-            {
-                return Command.CanExecute(parameter);
-            }
-
-            return false;
+            return Command != null && Command.CanExecute(parameter);
         }
 
         public void Execute(object parameter)
@@ -42,18 +37,18 @@ namespace Calculator.Commands
 
         private static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            CommandReference commandReference = d as CommandReference;
-            ICommand oldCommand = e.OldValue as ICommand;
-            ICommand newCommand = e.NewValue as ICommand;
+            var commandReference = d as CommandReference;
+            var oldCommand = e.OldValue as ICommand;
+            var newCommand = e.NewValue as ICommand;
 
             if (oldCommand != null)
             {
-                oldCommand.CanExecuteChanged -= commandReference.CanExecuteChanged;
+                oldCommand.CanExecuteChanged -= commandReference?.CanExecuteChanged;
             }
 
             if (newCommand != null)
             {
-                newCommand.CanExecuteChanged += commandReference.CanExecuteChanged;
+                newCommand.CanExecuteChanged += commandReference?.CanExecuteChanged;
             }
         }
     }

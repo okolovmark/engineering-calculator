@@ -7,11 +7,11 @@
         Title="CalculatorHistory" 
         ResizeMode="CanResize" Background="#FFF7F7F7" Foreground="Black" Visibility="Visible" Cursor="Arrow" Height="300" Width="300">
     
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <ViewModels:WindowHistoryViewModel/>
-    </Window.DataContext>
+    </Window.DataContext>-->
     <Grid>
-        <TextBox Text="{Binding DisplayHistory, Mode=OneWay}" FontSize="16" FontStyle="Italic"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True" />
+        <TextBox Text="{Binding Path=., Mode=OneTime}" FontSize="16" FontStyle="Italic"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True" />
     </Grid>
 </Window>
 

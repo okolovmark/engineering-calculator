@@ -5,14 +5,12 @@
 namespace Calculator.ViewModels
 {
     using System;
-    using System.Diagnostics;
     using System.Globalization;
-    using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Windows.Input;
     using Commands;
     using Models;
-    using Newtonsoft.Json;
     using Views;
 
     internal class MainWindowViewModel : ViewModelBase
@@ -21,6 +19,8 @@ namespace Calculator.ViewModels
         private DelegateCommand<string> _getDigitCommand;
         private DelegateCommand _getResultCommand;
         private DelegateCommand _showHistoryCommand;
+        private DelegateCommand _pushHistoryCommand;
+        private DelegateCommand _pullHistoryCommand;
 
         private string _display;
         private string _displayExp;
@@ -118,6 +118,32 @@ namespace Calculator.ViewModels
             }
         }
 
+        public ICommand PushHistoryCommand
+        {
+            get
+            {
+                if (_pushHistoryCommand == null)
+                {
+                    _pushHistoryCommand = new DelegateCommand(PushHistory, CanPushHistoryButtonPress);
+                }
+
+                return _pushHistoryCommand;
+            }
+        }
+
+        public ICommand PullHistoryCommand
+        {
+            get
+            {
+                if (_pullHistoryCommand == null)
+                {
+                    _pullHistoryCommand = new DelegateCommand(PullHistory, CanPullHistoryButtonPress);
+                }
+
+                return _pullHistoryCommand;
+            }
+        }
+
         private string DisplayHistory
         {
             get => _displayHistory;
@@ -135,6 +161,16 @@ namespace Calculator.ViewModels
         }
 
         private static bool CanShowHistoryButtonPress()
+        {
+            return true;
+        }
+
+        private static bool CanPushHistoryButtonPress()
+        {
+            return true;
+        }
+
+        private static bool CanPullHistoryButtonPress()
         {
             return true;
         }
@@ -490,8 +526,8 @@ namespace Calculator.ViewModels
             }
 
             var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-            const string SymbolsWhereNeedMult = "0123456789)";
-            foreach (var i in SymbolsWhereNeedMult)
+            const string symbolsWhereNeedMult = "0123456789)";
+            foreach (var i in symbolsWhereNeedMult)
             {
                 if (lastSymbol[0] != i)
                 {
@@ -524,7 +560,7 @@ namespace Calculator.ViewModels
             }
 
             var lastSymbol = _display.Substring(_display.Length - 1).ToCharArray();
-            const string Symbols = "(,+-/*^";
+            const string symbols = "(,+-/*^";
             var isTrue = false;
             if (lastSymbol[0] == '(')
             {
@@ -533,7 +569,7 @@ namespace Calculator.ViewModels
 
             if (_countOpenBracket > 0)
             {
-                foreach (var i in Symbols)
+                foreach (var i in symbols)
                 {
                     if (lastSymbol[0] == i)
                     {
@@ -572,7 +608,7 @@ namespace Calculator.ViewModels
                 }
             }
 
-            const string Symbols = "+-/*^";
+            const string symbols = "+-/*^";
             const string digits = "0123456789";
             if (_display != null)
             {
@@ -597,7 +633,7 @@ namespace Calculator.ViewModels
                 if (!isHavePoint)
                 {
                     var lastSymbol1 = _display.Substring(_display.Length - 1).ToCharArray();
-                    foreach (var j in Symbols)
+                    foreach (var j in symbols)
                     {
                         if (lastSymbol1[0] == j)
                         {
@@ -626,7 +662,7 @@ namespace Calculator.ViewModels
 
                         if (!isHaveDigit)
                         {
-                            if (Symbols.Any(j => i == j))
+                            if (symbols.Any(j => i == j))
                             {
                                 isHaveDigit = true;
                             }
@@ -640,7 +676,7 @@ namespace Calculator.ViewModels
                         if (isHaveDigit && isHaveOperation)
                         {
                             var lastSymbol1 = _display.Substring(_display.Length - 1).ToCharArray();
-                            foreach (var j in Symbols)
+                            foreach (var j in symbols)
                             {
                                 if (lastSymbol1[0] == j)
                                 {
@@ -675,7 +711,7 @@ namespace Calculator.ViewModels
             }
 
             string digits = "1234567890" + _specialSymbols;
-            const string Symbols = "+-/*^(";
+            const string symbols = "+-/*^(";
             var lastSymbol = _display.Substring(_display.Length - 1);
             foreach (var ss in digits)
             {
@@ -686,7 +722,7 @@ namespace Calculator.ViewModels
                 }
             }
 
-            foreach (var sy in Symbols)
+            foreach (var sy in symbols)
             {
                 if (lastSymbol[0] == sy)
                 {
@@ -731,15 +767,12 @@ namespace Calculator.ViewModels
         {
             if (_displayHistory != null)
             {
-                DisplayHistory += "\n" + DisplayExp + " = " + Display;
+                DisplayHistory += DisplayExp + " = " + Display + "\n";
             }
             else
             {
-                DisplayHistory = DisplayExp + " = " + Display;
+                DisplayHistory = DisplayExp + " = " + Display + "\n";
             }
-
-            var json = JsonConvert.SerializeObject(DisplayHistory);
-            File.WriteAllText("history.json", json);
         }
 
         private void GetResult()
@@ -763,8 +796,25 @@ namespace Calculator.ViewModels
 
         private void ShowHistory()
         {
-            var windowHistory = new WindowHistory();
+            var windowHistory = new WindowHistory(DisplayHistory);
             windowHistory.Show();
+        }
+
+        private void PushHistory()
+        {
+            WebClient client = new WebClient();
+            client.UploadString(new Uri("http://localhost:3000/"), "POST", DisplayHistory);
+        }
+
+        private void PullHistory()
+        {
+            WebClient client = new WebClient();
+            client.DownloadStringCompleted += (sender, args) =>
+            {
+                var windowHistory = new WindowHistory(args.Result);
+                windowHistory.Show();
+            };
+            client.DownloadStringAsync(new Uri("http://localhost:3000/"));
         }
 
         private void CorrectExpression(out bool complete)
