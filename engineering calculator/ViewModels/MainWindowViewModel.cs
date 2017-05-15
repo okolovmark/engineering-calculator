@@ -24,7 +24,7 @@ namespace Calculator.ViewModels
 
         private string _display;
         private string _displayExp;
-        private string _displayHistory;
+        private string _displayHistory = string.Empty;
         private string _displayErr;
         private int _countOpenBracket;
         private string _specialSymbols = "πe";
@@ -803,7 +803,14 @@ namespace Calculator.ViewModels
         private void PushHistory()
         {
             WebClient client = new WebClient();
-            client.UploadString(new Uri("http://localhost:3000/"), "POST", DisplayHistory);
+            try
+            {
+                client.UploadString(new Uri("http://localhost:3000/"), "POST", DisplayHistory);
+            }
+            catch (Exception e)
+            {
+                DisplayErr = "Сервер недоступен";
+            }
         }
 
         private void PullHistory()
@@ -811,8 +818,15 @@ namespace Calculator.ViewModels
             WebClient client = new WebClient();
             client.DownloadStringCompleted += (sender, args) =>
             {
-                var windowHistory = new WindowHistory(args.Result);
-                windowHistory.Show();
+                try
+                {
+                    var windowHistory = new WindowHistory(args.Result);
+                    windowHistory.Show();
+                }
+                catch (Exception e)
+                {
+                    DisplayErr = "Сервер недоступен";
+                }
             };
             client.DownloadStringAsync(new Uri("http://localhost:3000/"));
         }
