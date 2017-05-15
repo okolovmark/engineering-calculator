@@ -805,7 +805,8 @@ namespace Calculator.ViewModels
             WebClient client = new WebClient();
             try
             {
-                client.UploadString(new Uri("http://localhost:3000/"), "POST", DisplayHistory);
+                client.UploadStringCompleted += (sender, args) => { };
+                client.UploadStringAsync(new Uri("http://localhost:3000/"), "POST", DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\n" + DisplayHistory);
             }
             catch (Exception e)
             {
